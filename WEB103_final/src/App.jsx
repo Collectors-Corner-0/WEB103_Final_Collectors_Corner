@@ -10,8 +10,6 @@ function App() {
   // Have different hooks for each media type
   // const [medias, setMedias] = useState([]);
 
-  const user = {name: "PercyLover123", enjoying: "Percy Jackson", about: "I love the Percy Jackson series so so so much!", pp: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F9d%2F2f%2F5b%2F9d2f5b5bf6d06ea3bdaadc031eeb6d27.jpg&f=1&nofb=1&ipt=dd6c3681d4569c6cea3f648538c587f3c82bb23f4da1e4079f88b022ef4a1ea4"}
-
   const medias = [
     {title: "The Lightning Theif", creator: "Rick Riordan", rating: 5, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d", mediaLink: "https://www.readriordan.com/book/the-lightning-thief-reissue/"},
     {title: "The Lightning Theif", creator: "Rick Riordan", rating: 4, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d", mediaLink: "https://www.readriordan.com/book/the-lightning-thief-reissue/"},
@@ -22,6 +20,19 @@ function App() {
     {title: "The Lightning Theif", creator: "Rick Riordan", rating: 5, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d", mediaLink: "https://www.readriordan.com/book/the-lightning-thief-reissue/"},
     {title: "The Lightning Theif", creator: "Rick Riordan", rating: 5, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d", mediaLink: "https://www.readriordan.com/book/the-lightning-thief-reissue/"}
   ]
+
+  // const user = [
+  //   {name: "PercyLover123", enjoying: "Percy Jackson", about: "I love the Percy Jackson series so so so much!", pp: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F9d%2F2f%2F5b%2F9d2f5b5bf6d06ea3bdaadc031eeb6d27.jpg&f=1&nofb=1&ipt=dd6c3681d4569c6cea3f648538c587f3c82bb23f4da1e4079f88b022ef4a1ea4"},
+  //   {name: "AnnabethFannn", enjoying: "Percy Jackson", about: "I love the Percy Jackson series so so so much! Especially Annabeth Chase.", pp: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F9d%2F2f%2F5b%2F9d2f5b5bf6d06ea3bdaadc031eeb6d27.jpg&f=1&nofb=1&ipt=dd6c3681d4569c6cea3f648538c587f3c82bb23f4da1e4079f88b022ef4a1ea4"}
+  // ]
+
+  const user = {name: "PercyLover123", enjoying: "Percy Jackson", about: "I love the Percy Jackson series so so so much!", pp: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F9d%2F2f%2F5b%2F9d2f5b5bf6d06ea3bdaadc031eeb6d27.jpg&f=1&nofb=1&ipt=dd6c3681d4569c6cea3f648538c587f3c82bb23f4da1e4079f88b022ef4a1ea4"}
+
+  function addMedia() {
+    // open modal with form of title, creator, rating, mediaImg, mediaLink fields. 
+    // send form data to database of respective media (books, movies, music, etc.)
+    // then call function to load data again
+  }
 
   return (
     <>
@@ -47,6 +58,7 @@ function App() {
               />
             )
           }
+          <button onClick={addMedia}>✚</button> {/* If in session, SHOW */}
         </div>
       </section>
 

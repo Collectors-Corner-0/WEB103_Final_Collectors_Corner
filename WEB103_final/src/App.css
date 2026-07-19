@@ -36,8 +36,29 @@
   overflow-x: auto;
   column-gap: 1em;
 
-  padding: 8px;
+  position: relative;
 }
+.media-row button {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+
+  background: linear-gradient(to right, rgba(0, 0, 128, 0), rgba(0, 0, 128, 0.6));
+  width: 40%;
+  border: none;
+  border-radius: 50% 0 0 50%;
+
+  color: aliceblue;
+  font-size: larger;
+
+  cursor: pointer;
+  transition: 0.3s;
+}
+.media-row button:hover {
+  font-size: x-large;
+}
+
+
 
 .media-card {
   display: grid;
@@ -45,6 +66,7 @@
   grid-template-columns: auto;
 
   max-width: 180px;
+  margin: 8px;
 }
 
 .media-img {
