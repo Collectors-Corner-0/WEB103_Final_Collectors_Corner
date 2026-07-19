@@ -1,120 +1,56 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 
+import MediaCard from './components/MediaCard'
+
 function App() {
-  const [count, setCount] = useState(0)
+  // Set current user
+  // const [user, setUser] = useState([]);
+
+  // Have different hooks for each media type
+  // const [medias, setMedias] = useState([]);
+
+  const user = {name: "PercyLover123", enjoying: "Percy Jackson", about: "I love the Percy Jackson series so so so much!", pp: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F9d%2F2f%2F5b%2F9d2f5b5bf6d06ea3bdaadc031eeb6d27.jpg&f=1&nofb=1&ipt=dd6c3681d4569c6cea3f648538c587f3c82bb23f4da1e4079f88b022ef4a1ea4"}
+
+  const medias = [
+    {title: "The Lightning Theif", creator: "Rick Riordan", rating: 5, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d"},
+    {title: "The Lightning Theif", creator: "Rick Riordan", rating: 4, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d"},
+    {title: "The Lightning Theif", creator: "Rick Riordan", rating: 3, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d"},
+    {title: "The Lightning Theif", creator: "Rick Riordan", rating: 2, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d"},
+    {title: "The Lightning Theif", creator: "Rick Riordan", rating: 1, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d"},
+    {title: "The Lightning Theif", creator: "Rick Riordan", rating: 0, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d"},
+    {title: "The Lightning Theif", creator: "Rick Riordan", rating: 5, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d"},
+    {title: "The Lightning Theif", creator: "Rick Riordan", rating: 5, mediaImg: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FI%2F91uEuBMbkSL.jpg&f=1&nofb=1&ipt=a6246360deb438e86d78460c7036954618edcf82fc6d772365c1e4bf37c4913d"}
+  ]
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="collector-container">
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      <section className="user-profile">
+        <div className="profile-picture">
+          <img src={user.pp} />
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+        <div className="profile-text">
+          <h3>{user.name}</h3>
+          <h5>Currently Enjoying: {user.enjoying}</h5>
+          <p>{user.about}</p>
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <section className="media-row-container">
+        <div className="media-row">
+          {
+            medias.map(media => 
+              <MediaCard
+                media = {media}
+              />
+            )
+          }
+        </div>
+      </section>
+
+    </div>
     </>
   )
 }
