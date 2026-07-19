@@ -18,7 +18,9 @@ const MediaCard = ({media}) => {
     return(
         <div className="media-card">
             <div className="media-img">
-                <img src={media.mediaImg} />
+                <a href={media.mediaLink} target="_blank">
+                    <img src={media.mediaImg} />
+                </a>
             </div>
             <div className="media-text">
                 <p className="hearts">{calculateHearts()}</p>
