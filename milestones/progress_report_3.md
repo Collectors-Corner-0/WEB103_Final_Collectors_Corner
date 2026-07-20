@@ -25,8 +25,8 @@ List the name of each GitHub Milestone you created, one per line:
 - Final Milestone - Unit 9
 
 ## Milestone 3 Completion
-Replace the blank before the percent sign with a number from 0 to 100.
-Completion percentage for Milestone 3 - Unit 7: 33.33%
+Replace the blank before the percent sign with a number from 0 to 100.<br />
+Completion percentage for Milestone 3 - Unit 7: 33.33%<br />
 List each issue you completed this unit and the main file or folder where that work lives, one per line:
 - Create Media Card - WEB103_final/src/components/MediaCard.jsx
 - Link to Media - WEB103_final/src/components/MediaCard.jsx
