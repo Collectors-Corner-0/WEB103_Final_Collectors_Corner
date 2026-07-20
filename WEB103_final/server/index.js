@@ -9,11 +9,14 @@ const app = express();
 
 app.use(express.json());
 app.use((req, _res, next) => {
-  const userIdHeader = req.header('x-user-id');
-  if (userIdHeader) {
-    const parsedUserId = Number.parseInt(userIdHeader, 10);
-    if (Number.isInteger(parsedUserId) && parsedUserId > 0) {
-      req.session = { userId: parsedUserId };
+  // Development-only mock auth: allows setting a user id via header.
+  if (process.env.NODE_ENV !== 'production') {
+    const userIdHeader = req.header('x-user-id');
+    if (userIdHeader) {
+      const parsedUserId = Number.parseInt(userIdHeader, 10);
+      if (Number.isInteger(parsedUserId) && parsedUserId > 0) {
+        req.session = { userId: parsedUserId };
+      }
     }
   }
   next();
