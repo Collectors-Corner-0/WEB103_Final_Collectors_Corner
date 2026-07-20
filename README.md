@@ -56,7 +56,7 @@ Backend:
 
 <p>Allow users to attach a link to the media. This link can send users to the streaming service it’s hosted on, a link to where it’s hosted and available to watch, or a related site.</p>
 
-[gif goes here]
+<img src="./Feature_Gifs/LinkToMediaFeature.gif" />
 
 ### Browse Collections
 
