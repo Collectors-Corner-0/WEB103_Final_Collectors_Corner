@@ -1,17 +1,25 @@
 import express from 'express'
-import locationRouter from './routes/locations.js'
+import cors from 'cors'
+import path from 'path'
+import dotenv from 'dotenv'
+
+import './config/dotenv.js'
+import MediasRouter from './routes/medias.js'
+import profileRouter from './routes/profiles.js'
 
 const app = express()
 
 // initialize middleware
-app.use('/public', express.static('./public'))
-app.use('/scripts', express.static('./public/scripts'))
-app.use('/location', locationRouter)
+app.use(cors())
+// app.use('/public', express.static('./public'))
+// app.use('/scripts', express.static('./public/scripts'))
+app.use('/browse', profileRouter)
 
 
 // Define a route for the root URL
 app.get('/', (req, res) => {
-    res.status(200).send('<h1>LISTICLE PROJECT P1</h1>')
+    res.status(200).send('<h1>COLLECTOR\'S CORNER</h1>')
+    // res.status(200).sendFile(path.resolve('public', '.../client/index.html'))
 })
 
 
@@ -23,7 +31,3 @@ app.listen(PORT, () => {
 })
 
 
-
-// Queer Hot Spots in NYC
-// The Center, BGSQD, Hivemindbooks, Bluestockings, Stonewall, NYC Resistor, From Here To Sunday, The Nonbinarian Bookstore, 
-// Shared Attributes: Place/Venue Name, Borough, Neighborhood, if Store/if 3rd-Space, Masks Required?
