@@ -90,3 +90,20 @@ Never edit `planning/` to match. Note discrepancies in commit messages.
 - In `milestones/`, tick checklist boxes for verifiably complete work only. Never write reflection answers or completion percentages — those belong to the team
 - Keep changes scoped to the current task; do not refactor unrelated files
 - When a required detail is missing, choose the simplest reasonable option and state the assumption in the commit message rather than pausing
+
+## Development log
+
+At the end of every phase or task, append an entry to `DEVLOG.md`:
+
+### YYYY-MM-DD — <phase or task name>
+
+**Issues addressed:** #N, #N
+**Files created:** paths
+**Files modified:** paths, with a one-line note on what changed in each
+**Decisions and rationale:** any choice not dictated by CLAUDE.md or
+BUILD_GUIDE.md, and why it was made
+**Assumptions:** anything guessed because a detail was missing
+**Not done:** anything in scope that was skipped, and why
+**Verification:** the commands run to confirm acceptance criteria, and results
+
+Append only. Never rewrite or delete earlier entries.

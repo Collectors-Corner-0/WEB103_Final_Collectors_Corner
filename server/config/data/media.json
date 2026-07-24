@@ -1,0 +1,122 @@
+[
+  {
+    "title": "Dune",
+    "creator": "Frank Herbert",
+    "media_type": "book",
+    "description": "A duke's son leads desert warriors against the galactic empire that destroyed his family, on a planet that is the only source of the most valuable substance in existence.",
+    "cover_image_url": "https://covers.openlibrary.org/b/isbn/9780441013593-L.jpg",
+    "external_link": "https://openlibrary.org/isbn/9780441013593"
+  },
+  {
+    "title": "The Hobbit",
+    "creator": "J.R.R. Tolkien",
+    "media_type": "book",
+    "description": "A reluctant hobbit sets out to the Lonely Mountain with a group of dwarves to reclaim their treasure from the dragon Smaug.",
+    "cover_image_url": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
+    "external_link": "https://openlibrary.org/isbn/9780547928227"
+  },
+  {
+    "title": "Educated",
+    "creator": "Tara Westover",
+    "media_type": "book",
+    "description": "A woman raised in a survivalist family in rural Idaho pursues formal education for the first time at seventeen, eventually earning a PhD from Cambridge.",
+    "cover_image_url": "https://covers.openlibrary.org/b/isbn/9780399590504-L.jpg",
+    "external_link": "https://openlibrary.org/isbn/9780399590504"
+  },
+  {
+    "title": "Inception",
+    "creator": "Christopher Nolan",
+    "media_type": "movie",
+    "description": "A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into a target's subconscious.",
+    "cover_image_url": "https://upload.wikimedia.org/wikipedia/en/2/2e/Inception_%282010%29_theatrical_poster.jpg",
+    "external_link": "https://en.wikipedia.org/wiki/Inception"
+  },
+  {
+    "title": "The Matrix",
+    "creator": "Lana and Lilly Wachowski",
+    "media_type": "movie",
+    "description": "A computer hacker learns that the world he knows is a simulation and joins a rebellion against the machines that created it.",
+    "cover_image_url": "https://upload.wikimedia.org/wikipedia/en/d/db/The_Matrix.png",
+    "external_link": "https://en.wikipedia.org/wiki/The_Matrix"
+  },
+  {
+    "title": "Spirited Away",
+    "creator": "Hayao Miyazaki",
+    "media_type": "movie",
+    "description": "During her family's move to a new home, a sullen young girl wanders into a world ruled by gods, witches, and spirits.",
+    "cover_image_url": "https://upload.wikimedia.org/wikipedia/en/d/db/Spirited_Away_Japanese_poster.png",
+    "external_link": "https://en.wikipedia.org/wiki/Spirited_Away"
+  },
+  {
+    "title": "The Dark Side of the Moon",
+    "creator": "Pink Floyd",
+    "media_type": "music",
+    "description": "A concept album exploring conflict, greed, time, death, and mental illness, widely regarded as one of the greatest albums ever recorded.",
+    "cover_image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/3/3b/Dark_Side_of_the_Moon.png/330px-Dark_Side_of_the_Moon.png",
+    "external_link": "https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon"
+  },
+  {
+    "title": "Thriller",
+    "creator": "Michael Jackson",
+    "media_type": "music",
+    "description": "The best-selling album of all time, blending pop, rock, and funk across nine tracks including the title single and its iconic short film.",
+    "cover_image_url": "https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png",
+    "external_link": "https://en.wikipedia.org/wiki/Thriller_(album)"
+  },
+  {
+    "title": "Abbey Road",
+    "creator": "The Beatles",
+    "media_type": "music",
+    "description": "The band's eleventh studio album, known for its continuous medley on side two and the iconic zebra-crossing cover photo.",
+    "cover_image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/The_Beatles_Abbey_Road_album_cover.jpg/330px-The_Beatles_Abbey_Road_album_cover.jpg",
+    "external_link": "https://en.wikipedia.org/wiki/Abbey_Road"
+  },
+  {
+    "title": "Radiolab",
+    "creator": "WNYC Studios",
+    "media_type": "podcast",
+    "description": "A show about curiosity, weaving science, philosophy, and human stories into hour-long investigations of big questions.",
+    "cover_image_url": "https://upload.wikimedia.org/wikipedia/en/f/fd/Radiolab_logo.jpg",
+    "external_link": "https://en.wikipedia.org/wiki/Radiolab"
+  },
+  {
+    "title": "This American Life",
+    "creator": "Ira Glass",
+    "media_type": "podcast",
+    "description": "A weekly public radio program and podcast built around a theme, with a mix of essays, short fiction, and documentary segments.",
+    "cover_image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/This_American_Life.svg/330px-This_American_Life.svg.png",
+    "external_link": "https://en.wikipedia.org/wiki/This_American_Life"
+  },
+  {
+    "title": "Do Schools Kill Creativity?",
+    "creator": "Sir Ken Robinson",
+    "media_type": "video",
+    "description": "A TED Talk arguing that modern education systems suppress rather than nurture children's natural creativity.",
+    "cover_image_url": "https://img.youtube.com/vi/iG9CE55wbtY/hqdefault.jpg",
+    "external_link": "https://www.youtube.com/watch?v=iG9CE55wbtY"
+  },
+  {
+    "title": "Me at the zoo",
+    "creator": "Jawed Karim",
+    "media_type": "video",
+    "description": "The first video ever uploaded to YouTube, an 18-second clip filmed at the San Diego Zoo.",
+    "cover_image_url": "https://img.youtube.com/vi/jNQXAC9IVRw/hqdefault.jpg",
+    "external_link": "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+  },
+  {
+    "title": "National Geographic",
+    "creator": "National Geographic Society",
+    "media_type": "magazine",
+    "description": "The official monthly magazine of the National Geographic Society, covering geography, science, history, and world culture.",
+    "cover_image_url": "https://upload.wikimedia.org/wikipedia/en/a/ad/National_Geographic_Magazine_March_2017_Cover.jpg",
+    "external_link": "https://en.wikipedia.org/wiki/National_Geographic_(magazine)"
+  },
+  {
+    "title": "Sapiens: A Brief History of Humankind",
+    "creator": "Yuval Noah Harari",
+    "media_type": "audiobook",
+    "description": "A sweeping narrated history of the human species, from the emergence of Homo sapiens to the present day.",
+    "cover_image_url": "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
+    "external_link": "https://openlibrary.org/isbn/9780062316097"
+  }
+]
