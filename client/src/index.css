@@ -114,6 +114,28 @@ input:focus-visible {
   border-bottom: 2px solid var(--accent);
 }
 
+.nav-auth {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-left: auto;
+}
+
+.header-user {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.header-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 ::-webkit-scrollbar {
   height: 8px;
   width: 8px;

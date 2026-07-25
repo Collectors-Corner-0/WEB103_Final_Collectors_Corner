@@ -61,8 +61,8 @@ const mediaController = {
         cover_image_url = null,
         external_link = null,
         is_user_created = false,
-        created_by_user_id = null,
       } = req.body;
+      const createdByUserId = req.user.id;
 
       if (!title || !title.trim()) {
         return res.status(400).json({ error: 'title is required.' });
@@ -76,7 +76,7 @@ const mediaController = {
            (title, creator, media_type, description, cover_image_url, external_link, is_user_created, created_by_user_id)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
          RETURNING *`,
-        [title.trim(), creator, media_type, description, cover_image_url, external_link, is_user_created, created_by_user_id]
+        [title.trim(), creator, media_type, description, cover_image_url, external_link, is_user_created, createdByUserId]
       );
 
       return res.status(201).json(result.rows[0]);

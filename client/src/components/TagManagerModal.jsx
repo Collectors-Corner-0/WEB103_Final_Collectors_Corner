@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Modal from './Modal'
 
-const TagManagerModal = ({ apiUrl, userId, tags, onClose, onChange }) => {
+const TagManagerModal = ({ apiUrl, tags, onClose, onChange }) => {
   const [newName, setNewName] = useState('')
   const [newColor, setNewColor] = useState('#2f4858')
   const [editValues, setEditValues] = useState({})
@@ -22,7 +22,8 @@ const TagManagerModal = ({ apiUrl, userId, tags, onClose, onChange }) => {
       const res = await fetch(`${apiUrl}/tags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: Number(userId), name: newName, color: newColor }),
+        credentials: 'include',
+        body: JSON.stringify({ name: newName, color: newColor }),
       })
       const body = await res.json()
       if (!res.ok) throw new Error(body.error || 'Request failed.')
@@ -47,6 +48,7 @@ const TagManagerModal = ({ apiUrl, userId, tags, onClose, onChange }) => {
       const res = await fetch(`${apiUrl}/tags/${tag.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ name: edit.name, color: edit.color }),
       })
       const body = await res.json()
@@ -63,7 +65,7 @@ const TagManagerModal = ({ apiUrl, userId, tags, onClose, onChange }) => {
     setBusy(true)
     setError(null)
     try {
-      const res = await fetch(`${apiUrl}/tags/${tag.id}`, { method: 'DELETE' })
+      const res = await fetch(`${apiUrl}/tags/${tag.id}`, { method: 'DELETE', credentials: 'include' })
       const body = await res.json()
       if (!res.ok) throw new Error(body.error || 'Request failed.')
       onChange()

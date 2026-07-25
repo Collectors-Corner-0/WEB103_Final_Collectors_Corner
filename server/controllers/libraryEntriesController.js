@@ -79,7 +79,6 @@ const libraryEntriesController = {
   async createEntry(req, res) {
     try {
       const {
-        user_id,
         media_id,
         status = 'planned',
         rating = null,
@@ -87,11 +86,11 @@ const libraryEntriesController = {
         date_acquired = null,
       } = req.body;
 
-      const userId = parseId(user_id);
+      const userId = req.user.id;
       const mediaId = parseId(media_id);
 
-      if (userId === null || mediaId === null) {
-        return res.status(400).json({ error: 'user_id and media_id are required and must be positive integers.' });
+      if (mediaId === null) {
+        return res.status(400).json({ error: 'media_id is required and must be a positive integer.' });
       }
       if (rating !== null && !isValidRating(rating)) {
         return res.status(400).json({ error: 'rating must be an integer from 1 to 5.' });
@@ -130,6 +129,9 @@ const libraryEntriesController = {
       const existing = await pool.query('SELECT * FROM library_entries WHERE id = $1', [id]);
       if (existing.rowCount === 0) {
         return res.status(404).json({ error: 'Library entry not found.' });
+      }
+      if (existing.rows[0].user_id !== req.user.id) {
+        return res.status(403).json({ error: 'You can only modify your own library entries.' });
       }
 
       const { status, rating, personal_notes, date_acquired } = req.body;
@@ -170,12 +172,17 @@ const libraryEntriesController = {
         return res.status(400).json({ error: 'id must be a positive integer.' });
       }
 
-      const result = await pool.query('DELETE FROM library_entries WHERE id = $1 RETURNING id', [id]);
-      if (result.rowCount === 0) {
+      const existing = await pool.query('SELECT * FROM library_entries WHERE id = $1', [id]);
+      if (existing.rowCount === 0) {
         return res.status(404).json({ error: 'Library entry not found.' });
       }
+      if (existing.rows[0].user_id !== req.user.id) {
+        return res.status(403).json({ error: 'You can only modify your own library entries.' });
+      }
 
-      return res.json({ id });
+      const result = await pool.query('DELETE FROM library_entries WHERE id = $1 RETURNING id', [id]);
+
+      return res.json({ id: result.rows[0].id });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Internal server error.' });
@@ -188,6 +195,18 @@ const libraryEntriesController = {
       const tagId = parseId(req.params.tagId);
       if (entryId === null || tagId === null) {
         return res.status(400).json({ error: 'entryId and tagId must be positive integers.' });
+      }
+
+      const entry = await pool.query('SELECT user_id FROM library_entries WHERE id = $1', [entryId]);
+      if (entry.rowCount === 0) {
+        return res.status(404).json({ error: 'Library entry not found.' });
+      }
+      const tag = await pool.query('SELECT user_id FROM tags WHERE id = $1', [tagId]);
+      if (tag.rowCount === 0) {
+        return res.status(404).json({ error: 'Tag not found.' });
+      }
+      if (entry.rows[0].user_id !== req.user.id || tag.rows[0].user_id !== req.user.id) {
+        return res.status(403).json({ error: 'You can only apply your own tags to your own library entries.' });
       }
 
       const position = await pool.query(
@@ -221,6 +240,14 @@ const libraryEntriesController = {
       const tagId = parseId(req.params.tagId);
       if (entryId === null || tagId === null) {
         return res.status(400).json({ error: 'entryId and tagId must be positive integers.' });
+      }
+
+      const entry = await pool.query('SELECT user_id FROM library_entries WHERE id = $1', [entryId]);
+      if (entry.rowCount === 0) {
+        return res.status(404).json({ error: 'Library entry not found.' });
+      }
+      if (entry.rows[0].user_id !== req.user.id) {
+        return res.status(403).json({ error: 'You can only modify your own library entries.' });
       }
 
       const result = await pool.query(

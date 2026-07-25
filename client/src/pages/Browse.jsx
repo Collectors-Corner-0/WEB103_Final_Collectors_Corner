@@ -3,7 +3,7 @@ import useFetch from '../hooks/useFetch'
 import MediaCard from '../components/MediaCard'
 import AddMediaModal from '../components/AddMediaModal'
 
-const Browse = ({ apiUrl }) => {
+const Browse = ({ apiUrl, currentUserId }) => {
   const { data: media, loading, error, refetch } = useFetch(`${apiUrl}/media`)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -14,9 +14,11 @@ const Browse = ({ apiUrl }) => {
     <div className="collector-container">
       <div className="page-heading">
         <h2>Browse</h2>
-        <button type="button" className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
-          Add media
-        </button>
+        {currentUserId != null && (
+          <button type="button" className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
+            Add media
+          </button>
+        )}
       </div>
 
       <section className="media-row-container">
@@ -27,7 +29,7 @@ const Browse = ({ apiUrl }) => {
         </div>
       </section>
 
-      {isModalOpen && (
+      {currentUserId != null && isModalOpen && (
         <AddMediaModal
           apiUrl={apiUrl}
           onClose={() => setIsModalOpen(false)}

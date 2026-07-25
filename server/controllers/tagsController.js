@@ -42,12 +42,9 @@ const tagsController = {
 
   async createTag(req, res) {
     try {
-      const { user_id, name, color = null } = req.body;
-      const userId = parseId(user_id);
+      const { name, color = null } = req.body;
+      const userId = req.user.id;
 
-      if (userId === null) {
-        return res.status(400).json({ error: 'user_id is required and must be a positive integer.' });
-      }
       if (!name || !name.trim()) {
         return res.status(400).json({ error: 'name is required.' });
       }
@@ -86,6 +83,9 @@ const tagsController = {
       if (existing.rowCount === 0) {
         return res.status(404).json({ error: 'Tag not found.' });
       }
+      if (existing.rows[0].user_id !== req.user.id) {
+        return res.status(403).json({ error: 'You can only modify your own tags.' });
+      }
 
       const { name, color } = req.body;
       const errors = {};
@@ -120,11 +120,16 @@ const tagsController = {
         return res.status(400).json({ error: 'id must be a positive integer.' });
       }
 
-      const result = await pool.query('DELETE FROM tags WHERE id = $1 RETURNING id', [id]);
-      if (result.rowCount === 0) {
+      const existing = await pool.query('SELECT * FROM tags WHERE id = $1', [id]);
+      if (existing.rowCount === 0) {
         return res.status(404).json({ error: 'Tag not found.' });
       }
-      return res.json({ id });
+      if (existing.rows[0].user_id !== req.user.id) {
+        return res.status(403).json({ error: 'You can only modify your own tags.' });
+      }
+
+      const result = await pool.query('DELETE FROM tags WHERE id = $1 RETURNING id', [id]);
+      return res.json({ id: result.rows[0].id });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Internal server error.' });

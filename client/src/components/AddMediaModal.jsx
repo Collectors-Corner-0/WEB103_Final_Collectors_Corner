@@ -41,6 +41,7 @@ const AddMediaModal = ({ apiUrl, onClose, onCreated }) => {
       const res = await fetch(`${apiUrl}/media`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ ...form, is_user_created: true }),
       })
       const body = await res.json()

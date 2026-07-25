@@ -46,6 +46,7 @@ const LibraryEntryEdit = ({ apiUrl }) => {
       const res = await fetch(`${apiUrl}/library/${entryId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           status: form.status,
           rating: form.rating === '' ? null : Number(form.rating),
@@ -71,6 +72,7 @@ const LibraryEntryEdit = ({ apiUrl }) => {
     try {
       const res = await fetch(`${apiUrl}/library/${entryId}/tags/${tag.id}`, {
         method: isAssigned ? 'DELETE' : 'POST',
+        credentials: 'include',
       })
       const body = await res.json()
       if (!res.ok) throw new Error(body.error || 'Request failed.')
@@ -88,7 +90,7 @@ const LibraryEntryEdit = ({ apiUrl }) => {
     setDeleteError(null)
 
     try {
-      const res = await fetch(`${apiUrl}/library/${entryId}`, { method: 'DELETE' })
+      const res = await fetch(`${apiUrl}/library/${entryId}`, { method: 'DELETE', credentials: 'include' })
       const body = await res.json()
       if (!res.ok) throw new Error(body.error || 'Request failed.')
 

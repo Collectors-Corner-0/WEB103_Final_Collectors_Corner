@@ -7,8 +7,9 @@ import TagManagerModal from '../components/TagManagerModal'
 const MEDIA_TYPES = ['book', 'movie', 'music', 'podcast', 'video', 'magazine', 'audiobook']
 const STATUSES = ['planned', 'in_progress', 'completed', 'archived']
 
-const UserCollection = ({ apiUrl }) => {
+const UserCollection = ({ apiUrl, currentUserId }) => {
   const { userId } = useParams()
+  const isOwnCollection = currentUserId != null && Number(userId) === currentUserId
   const { data: user, loading: userLoading, error: userError } = useFetch(`${apiUrl}/users/${userId}`)
   const {
     data: entries,
@@ -76,9 +77,11 @@ const UserCollection = ({ apiUrl }) => {
 
       <div className="page-heading">
         <h2>Collection</h2>
-        <button type="button" className="btn btn-secondary" onClick={() => setIsManagingTags(true)}>
-          Manage tags
-        </button>
+        {isOwnCollection && (
+          <button type="button" className="btn btn-secondary" onClick={() => setIsManagingTags(true)}>
+            Manage tags
+          </button>
+        )}
       </div>
 
       <div className="filter-bar">
@@ -131,15 +134,18 @@ const UserCollection = ({ apiUrl }) => {
       <section className="media-row-container">
         <div className="media-row">
           {visibleEntries.map((entry) => (
-            <MediaCard key={entry.id} media={entry} editHref={`/library/${entry.id}/edit`} />
+            <MediaCard
+              key={entry.id}
+              media={entry}
+              editHref={isOwnCollection ? `/library/${entry.id}/edit` : undefined}
+            />
           ))}
         </div>
       </section>
 
-      {isManagingTags && (
+      {isOwnCollection && isManagingTags && (
         <TagManagerModal
           apiUrl={apiUrl}
-          userId={userId}
           tags={tags}
           onClose={() => setIsManagingTags(false)}
           onChange={handleTagManagerChange}

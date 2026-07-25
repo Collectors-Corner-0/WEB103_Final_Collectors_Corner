@@ -28,13 +28,13 @@ Designed and developed by: Teo Liang, Hien Vo Minh, Ethan Winch
 
 ## Tech Stack
 
-Frontend:
+Frontend: React with Vite, React Router, plain CSS
 
-Backend:
+Backend: Node.js with Express, PostgreSQL via `pg`, Passport with the GitHub OAuth strategy and `express-session`
 
 ## Features
 
-### Add Custom Media
+### ✅ Add Custom Media
 
 <p>Ability to upload an image, create tags, and add a title and description of the media you want to add to your collection. (Allows for niche or personal media to be added and not only recognized/published media.)</p>
 
@@ -46,31 +46,31 @@ Backend:
 
 [gif goes here]
 
-### Sort Media
+### ✅ Sort Media
 
 <p>Filter the media within a collection by tags.</p>
 
 [gif goes here]
 
-### Link to Media
+### ✅ Link to Media
 
 <p>Allow users to attach a link to the media. This link can send users to the streaming service it’s hosted on, a link to where it’s hosted and available to watch, or a related site.</p>
 
 <img src="./Feature_Gifs/LinkToMediaFeature.gif" />
 
-### Browse Collections
+### ✅ Browse Collections
 
 <p>Browse other’s media collections they have made.</p>
 
 [gif goes here]
 
-### Filter Collections
+### ✅ Filter Collections
 
 <p>Filter media collections by date, type (books, music, films), and tags.</p>
 
 [gif goes here]
 
-### Custom Tags
+### ✅ Custom Tags
 
 <p>Users can create custom tags to sort their collection by instead of being stuck with predefined ones.</p>
 
