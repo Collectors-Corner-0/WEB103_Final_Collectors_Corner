@@ -25,7 +25,15 @@ const ENTRY_SELECT = `
     media.creator,
     media.media_type,
     media.cover_image_url,
-    media.external_link
+    media.external_link,
+    COALESCE(
+      (SELECT json_agg(json_build_object('id', tags.id, 'name', tags.name, 'color', tags.color)
+                        ORDER BY library_entry_tags.position)
+       FROM library_entry_tags
+       JOIN tags ON tags.id = library_entry_tags.tag_id
+       WHERE library_entry_tags.library_entry_id = library_entries.id),
+      '[]'
+    ) AS tags
   FROM library_entries
   JOIN media ON media.id = library_entries.media_id
 `;
@@ -168,6 +176,62 @@ const libraryEntriesController = {
       }
 
       return res.json({ id });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error.' });
+    }
+  },
+
+  async assignTag(req, res) {
+    try {
+      const entryId = parseId(req.params.entryId);
+      const tagId = parseId(req.params.tagId);
+      if (entryId === null || tagId === null) {
+        return res.status(400).json({ error: 'entryId and tagId must be positive integers.' });
+      }
+
+      const position = await pool.query(
+        'SELECT COUNT(*)::int AS count FROM library_entry_tags WHERE library_entry_id = $1',
+        [entryId]
+      );
+
+      const result = await pool.query(
+        `INSERT INTO library_entry_tags (library_entry_id, tag_id, position)
+         VALUES ($1, $2, $3)
+         RETURNING *`,
+        [entryId, tagId, position.rows[0].count]
+      );
+
+      return res.status(201).json(result.rows[0]);
+    } catch (error) {
+      if (error.code === '23505') {
+        return res.status(409).json({ error: 'That tag is already applied to this entry.' });
+      }
+      if (error.code === '23503') {
+        return res.status(400).json({ error: 'entryId or tagId does not reference an existing row.' });
+      }
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error.' });
+    }
+  },
+
+  async removeTag(req, res) {
+    try {
+      const entryId = parseId(req.params.entryId);
+      const tagId = parseId(req.params.tagId);
+      if (entryId === null || tagId === null) {
+        return res.status(400).json({ error: 'entryId and tagId must be positive integers.' });
+      }
+
+      const result = await pool.query(
+        'DELETE FROM library_entry_tags WHERE library_entry_id = $1 AND tag_id = $2 RETURNING *',
+        [entryId, tagId]
+      );
+      if (result.rowCount === 0) {
+        return res.status(404).json({ error: 'That tag is not applied to this entry.' });
+      }
+
+      return res.json({ library_entry_id: entryId, tag_id: tagId });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Internal server error.' });

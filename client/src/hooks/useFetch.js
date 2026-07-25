@@ -4,8 +4,11 @@ function useFetch(url) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [refetchIndex, setRefetchIndex] = useState(0)
 
   useEffect(() => {
+    if (!url) return
+
     let cancelled = false
     setLoading(true)
     setError(null)
@@ -27,9 +30,11 @@ function useFetch(url) {
     return () => {
       cancelled = true
     }
-  }, [url])
+  }, [url, refetchIndex])
 
-  return { data, loading, error }
+  const refetch = () => setRefetchIndex((n) => n + 1)
+
+  return { data, loading, error, refetch }
 }
 
 export default useFetch

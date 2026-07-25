@@ -145,3 +145,87 @@
 - Playwright: screenshotted `/`, `/media/1`, and `/collections` before and after the token rebase — confirmed the grid no longer clips (all 15 items visible, no horizontal scroll), the title/badge overlap bug is gone, italic Literata titles render correctly, and the active-nav underline (`NavLink`) appears only on the matched route
 - `document.fonts` check in-browser confirmed Literata is actually loaded, not falling back
 - Hand-verified contrast ratios for `--ink-muted`, `--accent`, and `--danger` against their respective backgrounds via the WCAG relative-luminance formula
+
+### 2026-07-25 — Phase 5 — Add and edit custom media
+
+**Issues addressed:** #3 (Add Custom Media)
+
+**Files created:**
+
+- `client/src/components/Modal.jsx` — generic reusable modal shell: `createPortal` into `document.body`, `Escape`-to-close, backdrop-click-to-close. Built from `DESIGN.md`'s Modal spec.
+- `client/src/components/AddMediaModal.jsx` — the Add Media form, client-side validation, and submit logic
+
+**Files modified:**
+
+- `client/src/hooks/useFetch.js` — added a `refetchIndex`/`refetch()` pair so any page using the hook can re-trigger its GET on demand; fully backward compatible, every existing caller ignores the new return field
+- `client/src/pages/Browse.jsx` — added the "Add media" trigger button, modal-open state, and wired `refetch` as the modal's `onCreated` callback
+- `client/src/pages/LibraryEntryEdit.jsx` — replaced the Phase 4 read-only placeholder with a real form (status/rating/personal notes/date acquired), a `PATCH` submit that navigates to `/collections/:userId` on success, and a delete action behind a `Modal`-based confirmation dialog
+- `client/src/App.css` — added `.btn`/`.btn-primary`/`.btn-secondary`/`.btn-danger`, `.modal-backdrop`/`.modal`, `.field`/`.field-error`/`.form-actions`/`.form-error-banner`, `.page-heading` — all built from `DESIGN.md`'s existing tokens, no new hardcoded values; this is the first real use of the Button/Input/Modal specs that were deliberately left unbuilt in the design-system pass
+
+**Decisions and rationale:**
+
+- Client-side validation mirrors `server/controllers/mediaController.js`'s `createMedia` exactly (`title` required, `media_type` required) and nothing more — no format/length checks on `creator`, `description`, `cover_image_url`, or `external_link`, since the server doesn't enforce any either. Same principle on the edit form: `status` and `rating` are `<select>` elements constrained to the legal values by construction, so `updateEntry`'s validation is mirrored structurally rather than with a redundant runtime check.
+- Chose to give `useFetch` a `refetch()` function (re-run the real GET) over locally splicing the new row into state — guarantees the list matches server state exactly (ordering, any future filtering) rather than duplicating insert-position logic on the client.
+- `.btn-danger` is a small, justified addition beyond `DESIGN.md`'s two documented button variants (primary/secondary) — it uses the `--danger` token that already exists in the palette for exactly this purpose (destructive actions).
+- Reused the same generic `Modal` component for the delete confirmation rather than `window.confirm()` — a native browser dialog would look jarringly out of place against `DESIGN.md`'s considered visual system, and reusing `Modal` cost nothing new.
+- After a successful save or delete, the edit form navigates back to `/collections/:userId` (the entry's owner) rather than staying on the page — mirrors the "Return to Collection" affordance already implicit in the wireframes' media detail page.
+
+**Assumptions:** none beyond the above.
+
+**Not done:** no "add to my library" action on `Browse`/`MediaCard` (creating `library_entries` from the catalog view is a different, unbuilt feature — Phase 5 is only about creating `media` rows); no loading-skeleton or empty-state work (still deferred per `DESIGN.md`'s implementation-status note); `tags` remain Phase 6.
+
+**Verification (via Playwright against the live app, plus curl/psql spot-checks):**
+
+- Clicked "Add media," submitted with every field empty → inline "Title is required." and "Media type is required." appeared, fields got the `--danger` border, and `browser_network_requests` confirmed **no** `POST /api/media` was sent
+- Filled in a valid title + media type, submitted → network log showed `POST /api/media` → 201 then `GET /api/media` → 200 (the `refetch`), modal closed, new card appeared in the grid; confirmed via curl the row count went from 15 to 16 and the new title is in the response
+- Created a library entry via curl, opened `/library/:entryId/edit` → form was correctly pre-filled from the fetched entry; changed status/rating/notes, saved → redirected to `/collections/:userId`; confirmed via curl that the new values persisted in the database (not just local state)
+- Re-opened the same entry's edit page, clicked "Delete entry" → confirmation dialog appeared (styled via `Modal`, danger button); confirmed → redirected to the collection, which now read "0 items in library"; confirmed via curl that `GET /api/library/entry/:id` now 404s
+- `cd client && npm run build` — succeeds; `npm run lint` (oxlint) — clean
+- `cd server && npm run reset` re-run afterward to restore the clean seed state
+
+### 2026-07-25 — Phase 6 — Tags and filtering
+
+**Issues addressed:** #9 (Custom Tags), #8 (Filter Collections), #5 (Sort Media)
+
+**Files created:**
+
+- `server/controllers/tagsController.js` — `getTagsByUser`, `createTag`, `updateTag`, `deleteTag`
+- `server/routes/tags.js` — maps `/api/tags` URLs to the controller
+- `client/src/components/TagManagerModal.jsx` — create/rename/recolor/delete UI, reusing `Modal` from Phase 5
+
+**Files modified:**
+
+- `server/server.js` — mounts `app.use('/api/tags', tagsRouter)`
+- `server/controllers/libraryEntriesController.js` — added `assignTag`/`removeTag` (`POST`/`DELETE /:entryId/tags/:tagId`); `ENTRY_SELECT` now embeds each entry's `tags` as a `json_agg` correlated subquery ordered by `position`, so `GET /api/library/:userId` and `GET /api/library/entry/:id` return tags with no extra fetch
+- `server/routes/libraryEntries.js` — added the two tag-assignment routes
+- `client/src/pages/UserCollection.jsx` — tag/media-type/status filters and a title/date/rating sort control, all derived client-side via `useMemo` over the already-fetched entries; a "Manage tags" button opening `TagManagerModal`
+- `client/src/pages/LibraryEntryEdit.jsx` — a "Tags" section rendering every one of the user's tags as an immediate-effect toggle button (`POST`/`DELETE` on click, independent of the "Save changes" button)
+- `client/src/components/MediaCard.jsx` — renders `media.tags` as small chips (color swatch dot + name, never the raw user-picked color as background/text); **fixed a real bug** found during verification (see below)
+- `client/src/hooks/useFetch.js` — tolerates a falsy `url` (skips fetching, stays in `loading` state) so `LibraryEntryEdit` can defer its tags fetch until the entry (and its `user_id`) has loaded
+- `client/src/App.css` — `.filter-bar`, `.tag-chip`/`.tag-swatch`, `.tag-toggle`/`.tag-toggle.assigned`, `.tag-manager-*`, `.hint-text`, all from existing `DESIGN.md` tokens
+
+**Decisions and rationale:**
+
+- `position` on `library_entry_tags` is set automatically on assignment (`COUNT(*)` of the entry's existing tags — an append-to-end counter), not user-supplied or reorderable. Every read orders `ORDER BY position`, so a given entry's tags render in stable, deterministic assignment order. No drag-and-drop reordering UI — not requested, and gaps left by removed tags don't affect `ORDER BY` correctness, so nothing needs the sequence to stay contiguous.
+- Filtering and sorting are pure client-side derivations (`useMemo`) over the single already-fetched `GET /api/library/:userId` response — no additional request fires when a filter/sort `<select>` changes, and the URL never changes. Confirmed via `browser_network_requests` (zero new `/api/*` calls after changing any control) rather than just asserting it.
+- Tag chips use a small color swatch dot, never the user's chosen color as the chip's own background/text — sidesteps any contrast/legibility risk from an arbitrary picked color, consistent with `DESIGN.md`'s restrained-chrome thesis.
+- `TagManagerModal` mutations call both the tags list's and the entries list's `refetch()` (both exposed by `useFetch` since Phase 5), so deleting a tag removes its chips from already-rendered cards immediately — verified live: deleting "Sci-Fi" removed it from the filter dropdown, the tag list, and the Dune card's chip in the same interaction, no manual refresh needed.
+
+**Bugs found and fixed during verification:**
+
+- `tagsController.createTag` reused a PATCH-oriented validation helper that treats `undefined` as "field not being changed, skip validation" — correct for `updateTag` (optional fields) but wrong for `createTag`, where `name` is mandatory. A request with no `name` at all skipped validation entirely and hit the database's `NOT NULL` constraint, producing a raw 500 instead of a 400. Rewrote `createTag`'s required-field check to run unconditionally rather than reusing the "if present" helper.
+- `MediaCard`'s cover-image link used `media.id` unconditionally. That's correct when rendering plain `media` rows (`Browse`), but `UserCollection` passes library *entry* objects, where `.id` is the entry's own id, not the linked media's — cards for any entry whose `id` didn't coincidentally match its `media_id` linked to the wrong media detail page (caught concretely: an "Inception" entry with `id=2` linked to `/media/2`, which is "The Hobbit"). Fixed to `media.media_id ?? media.id`, correctly preferring the entry's `media_id` when present and falling back to `id` for plain media objects.
+
+**Assumptions:** none beyond the above.
+
+**Not done:** drag-and-drop tag reordering (not requested; `position` is assignment-order only); auth/ownership checks on tag or assignment mutations (still Phase 7, consistent with every prior phase).
+
+**Verification (via Playwright against the live app, plus curl/psql spot-checks):**
+
+- curl: created two tags, hit the `POST /api/tags` duplicate-name case (409) and missing-name case (400, after the bug fix above); assigned two tags to one entry and confirmed `position` 0 and 1 in assignment order via `GET /api/library/entry/:id`; confirmed the composite-PK duplicate-assignment case returns 409
+- Playwright: created a tag via the manager, assigned it to an entry via the edit page's toggle (confirmed `POST .../tags/:tagId` → 201 in the network log), navigated back to the collection and confirmed the chip appeared on the card
+- Selected the tag filter, the media-type/status filters, and each sort option in turn — confirmed via `browser_network_requests` that no new request fired for any of them and the URL bar never changed; filtering by the new tag correctly narrowed the grid to just the tagged entry; sorting by rating correctly ordered rated entries above the unrated one
+- Deleted the tag via the manager — confirmed it disappeared from the filter dropdown, the manager's own list, and the already-rendered card's chip, all without a page refresh
+- Refreshed `/collections/:userId` — filter/sort controls reset to defaults (expected, in-memory only); tag deletion and the earlier bug-fixed link behavior both persisted (confirmed database-backed, not local-state artifacts)
+- `cd client && npm run build` — succeeds; `npm run lint` (oxlint) — clean
+- `cd server && npm run reset` re-run afterward to restore the clean seed state
