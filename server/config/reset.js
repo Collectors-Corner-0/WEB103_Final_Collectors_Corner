@@ -173,19 +173,33 @@ async function seedLibraryEntryTagsTable() {
        WHERE users.username = $1 AND media.title = $2`,
       [assignment.username, assignment.media_title]
     );
+    if (entryResult.rowCount !== 1) {
+      throw new Error(
+        `Seed error: expected 1 library_entry for username="${assignment.username}" and media_title="${assignment.media_title}", found ${entryResult.rowCount}.`
+      );
+    }
     const entryId = entryResult.rows[0].id;
     const position = positionByEntry.get(entryId) ?? 0;
     positionByEntry.set(entryId, position + 1);
 
+    const tagResult = await pool.query(
+      `SELECT tags.id
+       FROM tags
+       JOIN users ON users.id = tags.user_id
+       WHERE users.username = $1 AND tags.name = $2`,
+      [assignment.username, assignment.tag_name]
+    );
+    if (tagResult.rowCount !== 1) {
+      throw new Error(
+        `Seed error: expected 1 tag for username="${assignment.username}" and tag_name="${assignment.tag_name}", found ${tagResult.rowCount}.`
+      );
+    }
+    const tagId = tagResult.rows[0].id;
+
     await pool.query(
       `INSERT INTO library_entry_tags (library_entry_id, tag_id, position)
-       VALUES (
-         $1,
-         (SELECT tags.id FROM tags JOIN users ON users.id = tags.user_id
-          WHERE users.username = $2 AND tags.name = $3),
-         $4
-       )`,
-      [entryId, assignment.username, assignment.tag_name, position]
+       VALUES ($1, $2, $3)`,
+      [entryId, tagId, position]
     );
   }
 }
