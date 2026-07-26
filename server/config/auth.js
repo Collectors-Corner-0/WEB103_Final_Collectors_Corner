@@ -11,7 +11,8 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const existing = await pool.query('SELECT * FROM users WHERE username = $1', [profile.username]);
+        const githubId = Number.parseInt(profile.id, 10);
+        const existing = await pool.query('SELECT * FROM users WHERE githubid = $1', [githubId]);
         if (existing.rowCount > 0) {
           return done(null, existing.rows[0]);
         }
@@ -20,7 +21,7 @@ passport.use(
           `INSERT INTO users (githubid, username, avatarurl, accesstoken, role)
            VALUES ($1, $2, $3, $4, 'collector')
            RETURNING *`,
-          [profile.id, profile.username, profile.photos?.[0]?.value, accessToken]
+          [githubId, profile.username, profile.photos?.[0]?.value, accessToken]
         );
         return done(null, created.rows[0]);
       } catch (error) {
