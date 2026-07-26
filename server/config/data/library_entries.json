@@ -1,0 +1,122 @@
+[
+  {
+    "username": "octocat",
+    "media_title": "Inception",
+    "status": "completed",
+    "rating": 5,
+    "personal_notes": "Mind-bending, watched twice back to back.",
+    "date_acquired": "2024-01-15"
+  },
+  {
+    "username": "octocat",
+    "media_title": "The Matrix",
+    "status": "completed",
+    "rating": 5,
+    "personal_notes": "Holds up.",
+    "date_acquired": "2023-11-02"
+  },
+  {
+    "username": "octocat",
+    "media_title": "Spirited Away",
+    "status": "completed",
+    "rating": 4,
+    "personal_notes": "Beautiful animation.",
+    "date_acquired": "2024-03-20"
+  },
+  {
+    "username": "octocat",
+    "media_title": "Dune",
+    "status": "in_progress",
+    "rating": null,
+    "personal_notes": "About halfway through, the world-building is dense.",
+    "date_acquired": "2024-06-01"
+  },
+  {
+    "username": "octocat",
+    "media_title": "Do Schools Kill Creativity?",
+    "status": "completed",
+    "rating": 4,
+    "personal_notes": null,
+    "date_acquired": "2023-09-10"
+  },
+  {
+    "username": "mojombo",
+    "media_title": "The Dark Side of the Moon",
+    "status": "completed",
+    "rating": 5,
+    "personal_notes": "Favorite album of all time.",
+    "date_acquired": "2022-05-04"
+  },
+  {
+    "username": "mojombo",
+    "media_title": "Thriller",
+    "status": "completed",
+    "rating": 5,
+    "personal_notes": null,
+    "date_acquired": "2022-06-15"
+  },
+  {
+    "username": "mojombo",
+    "media_title": "Abbey Road",
+    "status": "completed",
+    "rating": 4,
+    "personal_notes": "Side two medley is incredible.",
+    "date_acquired": "2023-01-08"
+  },
+  {
+    "username": "mojombo",
+    "media_title": "The Hobbit",
+    "status": "planned",
+    "rating": null,
+    "personal_notes": "Next up after my current read.",
+    "date_acquired": null
+  },
+  {
+    "username": "mojombo",
+    "media_title": "Sapiens: A Brief History of Humankind",
+    "status": "completed",
+    "rating": 4,
+    "personal_notes": "Made me rethink a lot.",
+    "date_acquired": "2023-08-22"
+  },
+  {
+    "username": "mojombo",
+    "media_title": "Radiolab",
+    "status": "in_progress",
+    "rating": null,
+    "personal_notes": null,
+    "date_acquired": "2024-02-14"
+  },
+  {
+    "username": "defunkt",
+    "media_title": "Educated",
+    "status": "completed",
+    "rating": 5,
+    "personal_notes": "Couldn't put it down.",
+    "date_acquired": "2023-04-11"
+  },
+  {
+    "username": "defunkt",
+    "media_title": "This American Life",
+    "status": "in_progress",
+    "rating": null,
+    "personal_notes": null,
+    "date_acquired": "2024-05-01"
+  },
+  {
+    "username": "defunkt",
+    "media_title": "National Geographic",
+    "status": "archived",
+    "rating": 3,
+    "personal_notes": "Old issue, kept for the photography.",
+    "date_acquired": "2021-12-01"
+  },
+  {
+    "username": "defunkt",
+    "media_title": "Me at the zoo",
+    "status": "completed",
+    "rating": 3,
+    "personal_notes": "Historical curiosity.",
+    "date_acquired": "2024-07-01"
+  }
+]
