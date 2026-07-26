@@ -20,14 +20,13 @@ async function createUsersTable() {
   await pool.query(`
     CREATE TABLE users (
       id SERIAL PRIMARY KEY,
-      githubid INT,
-      username VARCHAR(100) NOT NULL,
+      githubid INT NOT NULL UNIQUE,
+      username VARCHAR(100) NOT NULL UNIQUE,
       avatarurl TEXT,
       accesstoken VARCHAR(500),
       role VARCHAR(20) NOT NULL DEFAULT 'collector' CHECK (role IN ('collector', 'creator')),
       created_at TIMESTAMP DEFAULT NOW()
     );
-  `);
 }
 
 async function createUserProfilesTable() {
