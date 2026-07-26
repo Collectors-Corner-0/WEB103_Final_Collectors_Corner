@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
 import Modal from '../components/Modal'
 
 const STATUSES = ['planned', 'in_progress', 'completed', 'archived']
 const RATINGS = [1, 2, 3, 4, 5]
 
-const LibraryEntryEdit = ({ apiUrl }) => {
+const LibraryEntryEdit = ({ apiUrl, currentUserId, currentUserLoading }) => {
   const { entryId } = useParams()
   const navigate = useNavigate()
   const { data: entry, loading, error, refetch: refetchEntry } = useFetch(`${apiUrl}/library/entry/${entryId}`)
@@ -32,8 +32,16 @@ const LibraryEntryEdit = ({ apiUrl }) => {
     }
   }, [entry])
 
-  if (loading || !form) return <p>Loading…</p>
+  if (loading || !form || currentUserLoading) return <p>Loading…</p>
   if (error) return <p className="error-message">{error}</p>
+  if (currentUserId !== entry.user_id) {
+    return (
+      <div className="collector-container">
+        <p className="error-message">You don't have permission to edit this entry.</p>
+        <Link to={`/collections/${entry.user_id}`}>Back to collection</Link>
+      </div>
+    )
+  }
 
   const updateField = (name) => (e) => setForm((f) => ({ ...f, [name]: e.target.value }))
 

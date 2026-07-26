@@ -24,7 +24,10 @@ function App() {
     { path: '/media/:id', element: <MediaDetail apiUrl={API_URL} /> },
     { path: '/collections', element: <Collections apiUrl={API_URL} /> },
     { path: '/collections/:userId', element: <UserCollection apiUrl={API_URL} currentUserId={currentUserId} /> },
-    { path: '/library/:entryId/edit', element: <LibraryEntryEdit apiUrl={API_URL} /> },
+    {
+      path: '/library/:entryId/edit',
+      element: <LibraryEntryEdit apiUrl={API_URL} currentUserId={currentUserId} currentUserLoading={userLoading} />,
+    },
     { path: '/login', element: <Login authUrl={AUTH_URL} /> },
     { path: '*', element: <NotFound /> },
   ])

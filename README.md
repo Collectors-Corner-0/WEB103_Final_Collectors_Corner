@@ -76,7 +76,7 @@ Backend: Node.js with Express, PostgreSQL via `pg`, Passport with the GitHub OAu
 
 [gif goes here]
 
-### Access Control
+### ✅ Access Control
 
 <p>Users can only create/update/delete media from a collection if they are logged into the account associated with that collection.</p>
 
