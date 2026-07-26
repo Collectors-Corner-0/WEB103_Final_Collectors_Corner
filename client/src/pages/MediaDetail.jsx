@@ -19,7 +19,7 @@ const MediaDetail = ({ apiUrl }) => {
         <a href={media.external_link} target="_blank" rel="noopener noreferrer">
           View source ↗
         </a>
-      )
+      )}
     </div>
   )
 }
