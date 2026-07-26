@@ -20,7 +20,7 @@ async function createUsersTable() {
   await pool.query(`
     CREATE TABLE users (
       id SERIAL PRIMARY KEY,
-      githubid INT NOT NULL UNIQUE,
+      githubid BIGINT NOT NULL UNIQUE,
       username VARCHAR(100) NOT NULL,
       avatarurl TEXT,
       accesstoken VARCHAR(500),
