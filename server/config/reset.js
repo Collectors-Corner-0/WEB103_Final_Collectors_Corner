@@ -20,7 +20,7 @@ async function createUsersTable() {
   await pool.query(`
     CREATE TABLE users (
       id SERIAL PRIMARY KEY,
-      githubid BIGINT UNIQUE,
+      githubid BIGINT NOT NULL UNIQUE,
       username VARCHAR(100) NOT NULL,
       avatarurl TEXT,
       accesstoken VARCHAR(500),
@@ -128,6 +128,82 @@ async function seedMediaTable() {
   }
 }
 
+async function seedLibraryEntriesTable() {
+  const raw = await readFile(path.join(__dirname, 'data', 'library_entries.json'), 'utf8');
+  const entries = JSON.parse(raw);
+
+  for (const entry of entries) {
+    await pool.query(
+      `INSERT INTO library_entries (user_id, media_id, status, rating, personal_notes, date_acquired)
+       VALUES (
+         (SELECT id FROM users WHERE username = $1),
+         (SELECT id FROM media WHERE title = $2),
+         $3, $4, $5, $6
+       )`,
+      [entry.username, entry.media_title, entry.status, entry.rating, entry.personal_notes, entry.date_acquired]
+    );
+  }
+}
+
+async function seedTagsTable() {
+  const raw = await readFile(path.join(__dirname, 'data', 'tags.json'), 'utf8');
+  const tags = JSON.parse(raw);
+
+  for (const tag of tags) {
+    await pool.query(
+      `INSERT INTO tags (user_id, name, color)
+       VALUES ((SELECT id FROM users WHERE username = $1), $2, $3)`,
+      [tag.username, tag.name, tag.color]
+    );
+  }
+}
+
+async function seedLibraryEntryTagsTable() {
+  const raw = await readFile(path.join(__dirname, 'data', 'library_entry_tags.json'), 'utf8');
+  const assignments = JSON.parse(raw);
+
+  const positionByEntry = new Map();
+
+  for (const assignment of assignments) {
+    const entryResult = await pool.query(
+      `SELECT library_entries.id
+       FROM library_entries
+       JOIN users ON users.id = library_entries.user_id
+       JOIN media ON media.id = library_entries.media_id
+       WHERE users.username = $1 AND media.title = $2`,
+      [assignment.username, assignment.media_title]
+    );
+    if (entryResult.rowCount !== 1) {
+      throw new Error(
+        `Seed error: expected 1 library_entry for username="${assignment.username}" and media_title="${assignment.media_title}", found ${entryResult.rowCount}.`
+      );
+    }
+    const entryId = entryResult.rows[0].id;
+    const position = positionByEntry.get(entryId) ?? 0;
+    positionByEntry.set(entryId, position + 1);
+
+    const tagResult = await pool.query(
+      `SELECT tags.id
+       FROM tags
+       JOIN users ON users.id = tags.user_id
+       WHERE users.username = $1 AND tags.name = $2`,
+      [assignment.username, assignment.tag_name]
+    );
+    if (tagResult.rowCount !== 1) {
+      throw new Error(
+        `Seed error: expected 1 tag for username="${assignment.username}" and tag_name="${assignment.tag_name}", found ${tagResult.rowCount}.`
+      );
+    }
+    const tagId = tagResult.rows[0].id;
+
+    await pool.query(
+      `INSERT INTO library_entry_tags (library_entry_id, tag_id, position)
+       VALUES ($1, $2, $3)`,
+      [entryId, tagId, position]
+    );
+  }
+}
+
 async function resetDatabase() {
   await dropAllTables();
   await createUsersTable();
@@ -138,6 +214,9 @@ async function resetDatabase() {
   await createLibraryEntryTagsTable();
   await seedUsersTable();
   await seedMediaTable();
+  await seedLibraryEntriesTable();
+  await seedTagsTable();
+  await seedLibraryEntryTagsTable();
   console.log('Database reset complete.');
   await pool.end();
 }

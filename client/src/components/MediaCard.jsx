@@ -41,7 +41,7 @@ const MediaCard = ({ media, editHref }) => {
         </div>
       )}
       {media.external_link && (
-        <a href={media.external_link} target="_blank" rel="noreferrer" className="external-link">
+        <a href={media.external_link} target="_blank" rel="noopener noreferrer" className="external-link">
           View source ↗
         </a>
       )}

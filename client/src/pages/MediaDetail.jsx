@@ -16,7 +16,7 @@ const MediaDetail = ({ apiUrl }) => {
       <p className="media-type-badge">{media.media_type}</p>
       {media.description && <p>{media.description}</p>}
       {media.external_link && (
-        <a href={media.external_link} target="_blank" rel="noreferrer">
+        <a href={media.external_link} target="_blank" rel="noopener noreferrer">
           View source ↗
         </a>
       )}

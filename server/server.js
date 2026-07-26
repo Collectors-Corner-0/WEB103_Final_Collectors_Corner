@@ -14,6 +14,10 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 
+if (!process.env.SESSION_SECRET) {
+  throw new Error('SESSION_SECRET must be set');
+}
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,

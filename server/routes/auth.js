@@ -15,7 +15,8 @@ router.get(
 
 router.get('/login/success', (req, res) => {
   if (req.user) {
-    return res.json({ user: req.user });
+    const { id, username, avatarurl, role } = req.user;
+    return res.json({ user: { id, username, avatarurl, role } });
   }
   return res.status(401).json({ error: 'Not authenticated.' });
 });

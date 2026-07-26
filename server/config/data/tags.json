@@ -1,0 +1,8 @@
+[
+  { "username": "octocat", "name": "Mind-Bending", "color": "#6B4FA0" },
+  { "username": "octocat", "name": "Rewatch", "color": "#2F8F5B" },
+  { "username": "mojombo", "name": "Favorite", "color": "#C9A227" },
+  { "username": "mojombo", "name": "Up Next", "color": "#3B6EA5" },
+  { "username": "defunkt", "name": "Life-Changing", "color": "#A33A2E" },
+  { "username": "defunkt", "name": "Nostalgic", "color": "#5B8C5A" }
+]

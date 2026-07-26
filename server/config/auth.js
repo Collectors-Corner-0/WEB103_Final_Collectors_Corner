@@ -14,7 +14,14 @@ passport.use(
         const githubId = Number.parseInt(profile.id, 10);
         const existing = await pool.query('SELECT * FROM users WHERE githubid = $1', [githubId]);
         if (existing.rowCount > 0) {
-          return done(null, existing.rows[0]);
+          const updated = await pool.query(
+            `UPDATE users
+             SET username = $1, avatarurl = $2, accesstoken = $3
+             WHERE githubid = $4
+             RETURNING *`,
+            [profile.username, profile.photos?.[0]?.value, accessToken, githubId]
+          );
+          return done(null, updated.rows[0]);
         }
 
         const created = await pool.query(
