@@ -274,16 +274,13 @@ Do **not** write reflection answers or completion percentages. Those are the tea
 
 ---
 
-## Before deploying (Phase 9) — known gaps to fix first
+## Before deploying (Phase 9) — env vars to set
 
-Flagged by Copilot's PR review on #13, deliberately deferred rather than fixed during Phase 8 since they only matter once the app actually deploys. Address these before or during the Render deployment phase — every one of them will break the app in production if untouched, since they're all hardcoded to `localhost`:
+The four hardcoded-`localhost` values flagged by Copilot's PR review on #13 are now env-driven, each falling back to its local-dev value when unset — so nothing changes for local dev, but these three env vars need real values once actually deployed:
 
-1. `client/src/App.jsx` — `SERVER_URL` is hardcoded to `http://localhost:3001`. Read it from `import.meta.env.VITE_SERVER_URL` (Vite-native, works at build time per deploy target) with the current value as a local-dev fallback.
-2. `server/config/auth.js` — `callbackURL` is hardcoded to `http://localhost:3001/auth/github/callback`. Read from an env var (e.g. `GITHUB_CALLBACK_URL`) with the current value as fallback. Remember to also update the GitHub OAuth App's registered callback URL to match the deployed domain — this is the exact class of bug that caused the "redirect_uri is not associated with this application" error during Phase 7 testing.
-3. `server/routes/auth.js` — the post-login redirect (`res.redirect('http://localhost:5173/')`) is hardcoded. Read from an env var (e.g. `CLIENT_URL`) with the current value as fallback.
-4. `server/server.js` — the CORS `origin` is hardcoded to `http://localhost:5173`. Should read from the same `CLIENT_URL` env var as #3, so the two never drift apart.
-
-All four should default to their current localhost values when the env var is unset, so local dev keeps working unchanged with no new required configuration.
+1. `VITE_SERVER_URL` (client build-time env var) — the deployed API's base URL. Falls back to `http://localhost:3001`.
+2. `GITHUB_CALLBACK_URL` (server) — must exactly match the deployed domain's `/auth/github/callback` path, **and** the GitHub OAuth App's own registered callback URL must be updated to match. This is the exact class of bug that caused the "redirect_uri is not associated with this application" error during Phase 7 testing — a mismatch here fails the same way in production. Falls back to `http://localhost:3001/auth/github/callback`.
+3. `CLIENT_URL` (server) — the deployed client's origin. Used both for the post-login redirect (`server/routes/auth.js`) and the CORS `origin` (`server/server.js`), so they can't drift apart. Falls back to `http://localhost:5173`.
 
 ---
 
