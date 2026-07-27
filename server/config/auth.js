@@ -12,13 +12,13 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const githubId = Number.parseInt(profile.id, 10);
-        const existing = await pool.query('SELECT * FROM users WHERE githubid = $1', [githubId]);
+        const existing = await pool.query('SELECT id FROM users WHERE githubid = $1', [githubId]);
         if (existing.rowCount > 0) {
           const updated = await pool.query(
             `UPDATE users
              SET username = $1, avatarurl = $2, accesstoken = $3
              WHERE githubid = $4
-             RETURNING *`,
+             RETURNING id, username, avatarurl, role`,
             [profile.username, profile.photos?.[0]?.value, accessToken, githubId]
           );
           return done(null, updated.rows[0]);
@@ -27,7 +27,7 @@ passport.use(
         const created = await pool.query(
           `INSERT INTO users (githubid, username, avatarurl, accesstoken, role)
            VALUES ($1, $2, $3, $4, 'collector')
-           RETURNING *`,
+           RETURNING id, username, avatarurl, role`,
           [githubId, profile.username, profile.photos?.[0]?.value, accessToken]
         );
         return done(null, created.rows[0]);
