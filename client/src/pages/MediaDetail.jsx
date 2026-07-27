@@ -58,7 +58,7 @@ const MediaDetail = ({ apiUrl, currentUserId }) => {
           </button>
         </div>
       )}
-      {addError && <p className="form-error-banner">{addError}</p>}
+      {currentUserId != null && addError && <p className="form-error-banner">{addError}</p>}
     </div>
   )
 }
