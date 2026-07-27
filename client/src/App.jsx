@@ -11,7 +11,7 @@ import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import useCurrentUser from './hooks/useCurrentUser'
 
-const SERVER_URL = 'http://localhost:3001'
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001'
 const API_URL = `${SERVER_URL}/api`
 const AUTH_URL = `${SERVER_URL}/auth`
 

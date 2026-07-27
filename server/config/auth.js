@@ -7,7 +7,7 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: 'http://localhost:3001/auth/github/callback',
+      callbackURL: process.env.GITHUB_CALLBACK_URL || 'http://localhost:3001/auth/github/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -44,7 +44,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    const result = await pool.query('SELECT id, username, avatarurl, role FROM users WHERE id = $1', [id]);
     done(null, result.rows[0] || null);
   } catch (error) {
     done(error);
