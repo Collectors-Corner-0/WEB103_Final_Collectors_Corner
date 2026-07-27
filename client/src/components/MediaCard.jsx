@@ -1,12 +1,40 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const MediaCard = ({ media, editHref }) => {
+const MediaCard = ({ media, editHref, apiUrl, canAddToLibrary, onAdded }) => {
+  const [adding, setAdding] = useState(false)
+  const [added, setAdded] = useState(false)
+  const [addError, setAddError] = useState(null)
+
   const hearts = () => {
     let hearts = ''
     for (let i = 0; i < media.rating; i++) {
       hearts += '⁠❤︎'
     }
     return hearts
+  }
+
+  const handleAddToLibrary = async () => {
+    setAdding(true)
+    setAddError(null)
+
+    try {
+      const res = await fetch(`${apiUrl}/library`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ media_id: media.id }),
+      })
+      const body = await res.json()
+      if (!res.ok) throw new Error(body.error || 'Request failed.')
+
+      setAdded(true)
+      onAdded?.()
+    } catch (err) {
+      setAddError(err.message)
+    } finally {
+      setAdding(false)
+    }
   }
 
   return (
@@ -49,6 +77,19 @@ const MediaCard = ({ media, editHref }) => {
         <Link to={editHref} className="edit-link">
           Edit
         </Link>
+      )}
+      {canAddToLibrary && (
+        <>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleAddToLibrary}
+            disabled={adding || added}
+          >
+            {added ? 'Added to your collection' : adding ? 'Adding…' : 'Add to my collection'}
+          </button>
+          {addError && <p className="form-error-banner">{addError}</p>}
+        </>
       )}
     </div>
   )

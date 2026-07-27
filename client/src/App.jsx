@@ -21,7 +21,7 @@ function App() {
 
   const routeElement = useRoutes([
     { path: '/', element: <Browse apiUrl={API_URL} currentUserId={currentUserId} /> },
-    { path: '/media/:id', element: <MediaDetail apiUrl={API_URL} /> },
+    { path: '/media/:id', element: <MediaDetail apiUrl={API_URL} currentUserId={currentUserId} /> },
     { path: '/collections', element: <Collections apiUrl={API_URL} /> },
     { path: '/collections/:userId', element: <UserCollection apiUrl={API_URL} currentUserId={currentUserId} /> },
     {

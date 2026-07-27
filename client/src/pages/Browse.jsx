@@ -67,7 +67,7 @@ const Browse = ({ apiUrl, currentUserId }) => {
       <section className="media-row-container">
         <div className="media-row">
           {visibleMedia.map((item) => (
-            <MediaCard key={item.id} media={item} />
+            <MediaCard key={item.id} media={item} apiUrl={apiUrl} canAddToLibrary={currentUserId != null} />
           ))}
         </div>
       </section>
