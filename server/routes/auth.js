@@ -9,7 +9,8 @@ router.get(
   '/github/callback',
   passport.authenticate('github', { failureRedirect: '/auth/login/failed' }),
   (req, res) => {
-    res.redirect(process.env.CLIENT_URL || 'http://localhost:5173/');
+    const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
+    res.redirect(`${clientUrl}/`);
   }
 );
 
