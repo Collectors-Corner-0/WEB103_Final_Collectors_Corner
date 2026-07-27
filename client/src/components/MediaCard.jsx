@@ -23,7 +23,7 @@ const MediaCard = ({ media, editHref, apiUrl, canAddToLibrary, onAdded }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ media_id: media.id }),
+        body: JSON.stringify({ media_id: media.media_id ?? media.id }),
       })
       const body = await res.json()
       if (!res.ok) throw new Error(body.error || 'Request failed.')
