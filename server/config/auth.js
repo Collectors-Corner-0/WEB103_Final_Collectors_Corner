@@ -11,7 +11,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const githubId = Number.parseInt(profile.id, 10);
+        const githubId = profile.id;
         const existing = await pool.query('SELECT id FROM users WHERE githubid = $1', [githubId]);
         if (existing.rowCount > 0) {
           const updated = await pool.query(
