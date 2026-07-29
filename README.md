@@ -38,7 +38,7 @@ Backend: Node.js with Express, PostgreSQL via `pg`, Passport with the GitHub OAu
 
 <p>Ability to upload an image, create tags, and add a title and description of the media you want to add to your collection. (Allows for niche or personal media to be added and not only recognized/published media.)</p>
 
-[gif goes here]
+<img src="./Feature_Gifs/AddCustomMediaFeature.gif" />
 
 ### Search Pre-existing Media
 
@@ -50,7 +50,7 @@ Backend: Node.js with Express, PostgreSQL via `pg`, Passport with the GitHub OAu
 
 <p>Filter the media within a collection by tags.</p>
 
-[gif goes here]
+<img src="./Feature_Gifs/SortMediaFeature.gif" />
 
 ### ✅ Link to Media
 
@@ -62,25 +62,25 @@ Backend: Node.js with Express, PostgreSQL via `pg`, Passport with the GitHub OAu
 
 <p>Browse other’s media collections they have made.</p>
 
-[gif goes here]
+<img src="./Feature_Gifs/BrowseCollectionsFeature.gif" />
 
 ### ✅ Filter Collections
 
 <p>Filter media collections by date, type (books, music, films), and tags.</p>
 
-[gif goes here]
+<img src="./Feature_Gifs/FilterCollectionsFeature.gif" />
 
 ### ✅ Custom Tags
 
 <p>Users can create custom tags to sort their collection by instead of being stuck with predefined ones.</p>
 
-[gif goes here]
+<img src="./Feature_Gifs/CustomTagsFeature.gif" />
 
 ### ✅ Access Control
 
 <p>Users can only create/update/delete media from a collection if they are logged into the account associated with that collection.</p>
 
-[gif goes here]
+<img src="./Feature_Gifs/AccessControlFeature.gif" />
 
 <!--
 ### [ADDITIONAL FEATURES GO HERE - ADD ALL FEATURES HERE IN THE FORMAT ABOVE; you will check these off and add gifs as you complete them]
