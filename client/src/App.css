@@ -1,3 +1,19 @@
+.spinner {
+  width: 32px;
+  height: 32px;
+  margin: var(--space-8) auto;
+  border: 3px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .user-profile {
   display: grid;
   grid-template-columns: auto 1fr;

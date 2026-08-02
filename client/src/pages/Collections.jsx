@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
+import Spinner from '../components/Spinner'
 
 const Collections = ({ apiUrl }) => {
   const { data: users, loading, error } = useFetch(`${apiUrl}/users`)
 
-  if (loading) return <p>Loading…</p>
+  if (loading) return <Spinner />
   if (error) return <p className="error-message">{error}</p>
 
   return (
