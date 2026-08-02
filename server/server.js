@@ -29,7 +29,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: isProduction ? { secure: true, sameSite: 'none', partitioned: true } : {},
+    cookie: isProduction ? { secure: true, sameSite: 'none' } : {},
   })
 );
 app.use(passport.initialize());
