@@ -4,7 +4,7 @@ CodePath WEB103 Final Project
 
 Designed and developed by: Teo Liang, Hien Vo Minh, Ethan Winch
 
-🔗 Link to deployed app: (https://web103-final-collectors-corner-1.onrender.com)
+🔗 Link to deployed app: https://web103-final-collectors-corner-1.onrender.com
 
 ## About
 
