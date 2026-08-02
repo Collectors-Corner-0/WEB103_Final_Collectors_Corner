@@ -10,6 +10,7 @@ import tagsRouter from './routes/tags.js';
 import authRouter from './routes/auth.js';
 
 const app = express();
+app.set('trust proxy', 1);
 
 const clientOrigin = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
 app.use(cors({ origin: clientOrigin, credentials: true }));
@@ -19,11 +20,14 @@ if (!process.env.SESSION_SECRET) {
   throw new Error('SESSION_SECRET must be set');
 }
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: isProduction ? { secure: true, sameSite: 'none', partitioned: true } : {},
   })
 );
 app.use(passport.initialize());
