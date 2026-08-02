@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import useFetch from '../hooks/useFetch'
 import MediaCard from '../components/MediaCard'
 import AddMediaModal from '../components/AddMediaModal'
+import Spinner from '../components/Spinner'
 
 const MEDIA_TYPES = ['book', 'movie', 'music', 'podcast', 'video', 'magazine', 'audiobook']
 
@@ -33,7 +34,7 @@ const Browse = ({ apiUrl, currentUserId }) => {
     return result
   }, [media, typeFilter, sortBy, titleQuery])
 
-  if (loading) return <p>Loading…</p>
+  if (loading) return <Spinner />
   if (error) return <p className="error-message">{error}</p>
 
   return (

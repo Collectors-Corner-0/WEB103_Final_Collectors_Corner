@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
+import Spinner from '../components/Spinner'
 
 const MediaDetail = ({ apiUrl, currentUserId }) => {
   const { id } = useParams()
@@ -9,7 +10,7 @@ const MediaDetail = ({ apiUrl, currentUserId }) => {
   const [added, setAdded] = useState(false)
   const [addError, setAddError] = useState(null)
 
-  if (loading) return <p>Loading…</p>
+  if (loading) return <Spinner />
   if (error) return <p className="error-message">{error}</p>
 
   const handleAddToLibrary = async () => {

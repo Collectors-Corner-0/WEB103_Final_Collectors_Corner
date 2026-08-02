@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
 import Modal from '../components/Modal'
+import Spinner from '../components/Spinner'
 
 const STATUSES = ['planned', 'in_progress', 'completed', 'archived']
 const RATINGS = [1, 2, 3, 4, 5]
@@ -32,7 +33,7 @@ const LibraryEntryEdit = ({ apiUrl, currentUserId, currentUserLoading }) => {
     }
   }, [entry])
 
-  if (loading || !form || currentUserLoading) return <p>Loading…</p>
+  if (loading || !form || currentUserLoading) return <Spinner />
   if (error) return <p className="error-message">{error}</p>
   if (currentUserId !== entry.user_id) {
     return (

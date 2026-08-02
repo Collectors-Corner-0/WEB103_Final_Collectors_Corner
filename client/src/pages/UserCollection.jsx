@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
 import MediaCard from '../components/MediaCard'
 import TagManagerModal from '../components/TagManagerModal'
+import Spinner from '../components/Spinner'
 
 const MEDIA_TYPES = ['book', 'movie', 'music', 'podcast', 'video', 'magazine', 'audiobook']
 const STATUSES = ['planned', 'in_progress', 'completed', 'archived']
@@ -51,7 +52,7 @@ const UserCollection = ({ apiUrl, currentUserId }) => {
     return result
   }, [entries, tagFilter, typeFilter, statusFilter, sortBy])
 
-  if (userLoading || entriesLoading || tagsLoading) return <p>Loading…</p>
+  if (userLoading || entriesLoading || tagsLoading) return <Spinner />
   if (userError) return <p className="error-message">{userError}</p>
   if (entriesError) return <p className="error-message">{entriesError}</p>
   if (tagsError) return <p className="error-message">{tagsError}</p>
