@@ -40,7 +40,7 @@ Backend: Node.js with Express, PostgreSQL via `pg`, Passport with the GitHub OAu
 
 <img src="./Feature_Gifs/AddCustomMediaFeature.gif" />
 
-### Search Pre-existing Media
+### ✅ Search Pre-existing Media
 
 <p>The app remembers the custom media others have uploaded, so if a user wants to add media that already exists on the site, they are able to search for and add it to their collection without having to manually create a new media, upload an image, fill out a description, etc. </p>
 
