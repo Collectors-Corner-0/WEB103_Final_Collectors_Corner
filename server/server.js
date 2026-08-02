@@ -11,6 +11,11 @@ import authRouter from './routes/auth.js';
 
 const app = express();
 
+const isProduction = process.env.NODE_ENV === 'production';
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
 const clientOrigin = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
 app.use(cors({ origin: clientOrigin, credentials: true }));
 app.use(express.json());
@@ -24,6 +29,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: isProduction ? { secure: true, sameSite: 'none', partitioned: true } : {},
   })
 );
 app.use(passport.initialize());
