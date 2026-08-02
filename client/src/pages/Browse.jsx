@@ -10,6 +10,7 @@ const Browse = ({ apiUrl, currentUserId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [typeFilter, setTypeFilter] = useState('')
   const [sortBy, setSortBy] = useState('title')
+  const [titleQuery, setTitleQuery] = useState('')
 
   const visibleMedia = useMemo(() => {
     if (!media) return []
@@ -17,6 +18,10 @@ const Browse = ({ apiUrl, currentUserId }) => {
     let result = media
     if (typeFilter) {
       result = result.filter((item) => item.media_type === typeFilter)
+    }
+    if (titleQuery.trim()) {
+      const query = titleQuery.trim().toLowerCase()
+      result = result.filter((item) => item.title.toLowerCase().includes(query))
     }
 
     result = [...result].sort((a, b) => {
@@ -26,7 +31,7 @@ const Browse = ({ apiUrl, currentUserId }) => {
     })
 
     return result
-  }, [media, typeFilter, sortBy])
+  }, [media, typeFilter, sortBy, titleQuery])
 
   if (loading) return <p>Loading…</p>
   if (error) return <p className="error-message">{error}</p>
@@ -43,6 +48,17 @@ const Browse = ({ apiUrl, currentUserId }) => {
       </div>
 
       <div className="filter-bar">
+        <div className="field">
+          <label htmlFor="search-title">Search by title</label>
+          <input
+            id="search-title"
+            type="text"
+            value={titleQuery}
+            onChange={(e) => setTitleQuery(e.target.value)}
+            placeholder="Search media…"
+          />
+        </div>
+
         <div className="field">
           <label htmlFor="filter-type">Media type</label>
           <select id="filter-type" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
