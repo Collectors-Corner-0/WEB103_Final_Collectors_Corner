@@ -28,7 +28,7 @@ List the name of each GitHub Milestone you created, one per line:
 
 ## Final Milestone Completion
 Replace the blank before the percent sign with a number from 0 to 100.<br />
-Completion percentage for Final Milestone - Unit 9: ___%<br />
+Completion percentage for Final Milestone - Unit 9: 100%<br />
 List each issue you completed this unit and the main file or folder where that work lives, one per line:
 - Deploy to Render - server/server.js, server/package.json, server/.env.example, client/.env.example
 - Auto-Generate Starter Tags for New Users - server/config/auth.js
