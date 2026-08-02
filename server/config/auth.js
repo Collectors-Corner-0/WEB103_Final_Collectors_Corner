@@ -30,6 +30,18 @@ passport.use(
            RETURNING id, username, avatarurl, role`,
           [githubId, profile.username, profile.photos?.[0]?.value, accessToken]
         );
+
+        // Best-effort: a new account should start with a few tags, but a
+        // seeding failure here must never block the login that created it.
+        try {
+          await pool.query(
+            'INSERT INTO tags (user_id, name) VALUES ($1, $2), ($1, $3), ($1, $4)',
+            [created.rows[0].id, 'Favorites', 'In Progress', 'Completed']
+          );
+        } catch (tagError) {
+          console.error('Failed to seed starter tags for new user', created.rows[0].id, tagError);
+        }
+
         return done(null, created.rows[0]);
       } catch (error) {
         return done(error);
