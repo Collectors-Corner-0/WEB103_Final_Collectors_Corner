@@ -127,7 +127,9 @@ const libraryEntriesController = {
         let created;
         try {
           created = await pool.query(
-            `INSERT INTO collections (user_id, name, position) VALUES ($1, $2, $3) RETURNING id`,
+            `INSERT INTO collections (user_id, name, avatar_url, position)
+             VALUES ($1, $2, (SELECT avatarurl FROM users WHERE id = $1), $3)
+             RETURNING id`,
             [userId, name, position]
           );
         } catch (err) {

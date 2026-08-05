@@ -67,6 +67,7 @@ async function createCollectionsTable() {
       id SERIAL PRIMARY KEY,
       user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       name VARCHAR(100) NOT NULL,
+      avatar_url TEXT,
       position INT NOT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       UNIQUE (user_id, position)
@@ -148,8 +149,13 @@ async function seedCollectionsTable() {
 
   for (const collection of collections) {
     await pool.query(
-      `INSERT INTO collections (user_id, name, position)
-       VALUES ((SELECT id FROM users WHERE username = $1), $2, $3)`,
+      `INSERT INTO collections (user_id, name, avatar_url, position)
+       VALUES (
+         (SELECT id FROM users WHERE username = $1),
+         $2,
+         (SELECT avatarurl FROM users WHERE username = $1),
+         $3
+       )`,
       [collection.username, collection.name, collection.position]
     );
   }

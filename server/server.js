@@ -19,7 +19,7 @@ if (isProduction) {
 
 const clientOrigin = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
 app.use(cors({ origin: clientOrigin, credentials: true }));
-app.use(express.json());
+app.use(express.json({ limit: '3mb' })); // room for base64-encoded collection avatar uploads
 
 if (!process.env.SESSION_SECRET) {
   throw new Error('SESSION_SECRET must be set');
