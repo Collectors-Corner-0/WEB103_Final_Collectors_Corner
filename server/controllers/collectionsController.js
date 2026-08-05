@@ -120,6 +120,9 @@ const collectionsController = {
 
       let finalAvatarUrl = existing.rows[0].avatar_url;
       if (avatar_url !== undefined) {
+        if (avatar_url !== null && typeof avatar_url !== 'string') {
+          return res.status(400).json({ error: 'avatar_url must be a string (URL/data URI) or null.' });
+        }
         const trimmed = typeof avatar_url === 'string' ? avatar_url.trim() : '';
         if (trimmed && !isValidAvatarUrl(trimmed)) {
           return res
