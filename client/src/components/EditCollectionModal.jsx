@@ -13,7 +13,10 @@ const EditCollectionModal = ({ apiUrl, collection, onClose, onSaved }) => {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(null)
 
-  const updateField = (name) => (e) => setForm((f) => ({ ...f, [name]: e.target.value }))
+  const updateField = (name) => (e) => {
+    setForm((f) => ({ ...f, [name]: e.target.value }))
+    setFieldErrors((errors) => ({ ...errors, [name]: undefined }))
+  }
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]
