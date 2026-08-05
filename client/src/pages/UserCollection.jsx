@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
 import MediaCard from '../components/MediaCard'
 import TagManagerModal from '../components/TagManagerModal'
+import EditCollectionModal from '../components/EditCollectionModal'
 import Spinner from '../components/Spinner'
 
 const MEDIA_TYPES = ['book', 'movie', 'music', 'podcast', 'video', 'magazine', 'audiobook']
@@ -21,9 +22,12 @@ const UserCollection = ({ apiUrl, currentUserId }) => {
   const { data: tags, loading: tagsLoading, error: tagsError, refetch: refetchTags } = useFetch(
     `${apiUrl}/tags/${userId}`
   )
-  const { data: collections, loading: collectionsLoading, error: collectionsError } = useFetch(
-    `${apiUrl}/collections/${userId}`
-  )
+  const {
+    data: collections,
+    loading: collectionsLoading,
+    error: collectionsError,
+    refetch: refetchCollections,
+  } = useFetch(`${apiUrl}/collections/${userId}`)
   const collection = collections?.find((c) => c.id === Number(collectionId))
 
   const [tagFilter, setTagFilter] = useState('')
@@ -31,6 +35,7 @@ const UserCollection = ({ apiUrl, currentUserId }) => {
   const [statusFilter, setStatusFilter] = useState('')
   const [sortBy, setSortBy] = useState('title')
   const [isManagingTags, setIsManagingTags] = useState(false)
+  const [isEditingCollection, setIsEditingCollection] = useState(false)
 
   const visibleEntries = useMemo(() => {
     if (!entries) return []
@@ -84,11 +89,21 @@ const UserCollection = ({ apiUrl, currentUserId }) => {
       <Link to={`/collections/${userId}`}>← All of {user.username}'s collections</Link>
 
       <div className="page-heading">
-        <h2>{collection?.name || 'Collection'}</h2>
+        <div className="collection-heading">
+          {collection?.avatar_url && (
+            <img src={collection.avatar_url} alt={collection.name} className="collection-heading-avatar" />
+          )}
+          <h2>{collection?.name || 'Collection'}</h2>
+        </div>
         {isOwnCollection && (
-          <button type="button" className="btn btn-secondary" onClick={() => setIsManagingTags(true)}>
-            Manage tags
-          </button>
+          <div className="form-actions">
+            <button type="button" className="btn btn-secondary" onClick={() => setIsEditingCollection(true)}>
+              Edit collection
+            </button>
+            <button type="button" className="btn btn-secondary" onClick={() => setIsManagingTags(true)}>
+              Manage tags
+            </button>
+          </div>
         )}
       </div>
 
@@ -157,6 +172,15 @@ const UserCollection = ({ apiUrl, currentUserId }) => {
           tags={tags}
           onClose={() => setIsManagingTags(false)}
           onChange={handleTagManagerChange}
+        />
+      )}
+
+      {isOwnCollection && isEditingCollection && collection && (
+        <EditCollectionModal
+          apiUrl={apiUrl}
+          collection={collection}
+          onClose={() => setIsEditingCollection(false)}
+          onSaved={refetchCollections}
         />
       )}
     </div>
