@@ -1,39 +1,22 @@
-import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
+import useAddToLibrary from '../hooks/useAddToLibrary'
 import Spinner from '../components/Spinner'
+import ChooseCollectionModal from '../components/ChooseCollectionModal'
 
 const MediaDetail = ({ apiUrl, currentUserId }) => {
   const { id } = useParams()
   const { data: media, loading, error } = useFetch(`${apiUrl}/media/${id}`)
-  const [adding, setAdding] = useState(false)
-  const [added, setAdded] = useState(false)
-  const [addError, setAddError] = useState(null)
+  // Hooks must run unconditionally, before the loading/error guards below --
+  // media?.id is undefined until it loads, which is fine since attemptAdd()
+  // can't actually fire until the button below has rendered.
+  const { adding, added, addError, needsCollectionChoice, attemptAdd, closeCollectionChoice } = useAddToLibrary(
+    apiUrl,
+    media?.id
+  )
 
   if (loading) return <Spinner />
   if (error) return <p className="error-message">{error}</p>
-
-  const handleAddToLibrary = async () => {
-    setAdding(true)
-    setAddError(null)
-
-    try {
-      const res = await fetch(`${apiUrl}/library`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ media_id: media.id }),
-      })
-      const body = await res.json()
-      if (!res.ok) throw new Error(body.error || 'Request failed.')
-
-      setAdded(true)
-    } catch (err) {
-      setAddError(err.message)
-    } finally {
-      setAdding(false)
-    }
-  }
 
   return (
     <div className="collector-container media-detail">
@@ -49,17 +32,21 @@ const MediaDetail = ({ apiUrl, currentUserId }) => {
       )}
       {currentUserId != null && (
         <div className="form-actions">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleAddToLibrary}
-            disabled={adding || added}
-          >
+          <button type="button" className="btn btn-secondary" onClick={() => attemptAdd()} disabled={adding || added}>
             {added ? 'Added to your collection' : adding ? 'Adding…' : 'Add to my collection'}
           </button>
         </div>
       )}
       {currentUserId != null && addError && <p className="form-error-banner">{addError}</p>}
+
+      {currentUserId != null && needsCollectionChoice && (
+        <ChooseCollectionModal
+          apiUrl={apiUrl}
+          userId={currentUserId}
+          onClose={closeCollectionChoice}
+          onSelect={(collectionId) => attemptAdd(collectionId)}
+        />
+      )}
     </div>
   )
 }

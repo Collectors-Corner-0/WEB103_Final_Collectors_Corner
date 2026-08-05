@@ -5,6 +5,7 @@ import Header from './components/Header'
 import Browse from './pages/Browse'
 import MediaDetail from './pages/MediaDetail'
 import Collections from './pages/Collections'
+import UserCollections from './pages/UserCollections'
 import UserCollection from './pages/UserCollection'
 import LibraryEntryEdit from './pages/LibraryEntryEdit'
 import Login from './pages/Login'
@@ -23,7 +24,11 @@ function App() {
     { path: '/', element: <Browse apiUrl={API_URL} currentUserId={currentUserId} /> },
     { path: '/media/:id', element: <MediaDetail apiUrl={API_URL} currentUserId={currentUserId} /> },
     { path: '/collections', element: <Collections apiUrl={API_URL} /> },
-    { path: '/collections/:userId', element: <UserCollection apiUrl={API_URL} currentUserId={currentUserId} /> },
+    { path: '/collections/:userId', element: <UserCollections apiUrl={API_URL} currentUserId={currentUserId} /> },
+    {
+      path: '/collections/:userId/:collectionId',
+      element: <UserCollection apiUrl={API_URL} currentUserId={currentUserId} />,
+    },
     {
       path: '/library/:entryId/edit',
       element: <LibraryEntryEdit apiUrl={API_URL} currentUserId={currentUserId} currentUserLoading={userLoading} />,
