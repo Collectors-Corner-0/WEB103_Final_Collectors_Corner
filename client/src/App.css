@@ -359,6 +359,18 @@
   margin-top: var(--space-6);
 }
 
+.form-actions-split {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.form-actions-split .form-actions {
+  margin-top: 0;
+}
+
 .form-error-banner {
   background: #fbeae7;
   color: var(--danger);

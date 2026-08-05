@@ -7,5 +7,6 @@ const router = Router();
 router.get('/:userId', collectionsController.getCollectionsByUser);
 router.post('/', requireAuth, collectionsController.createCollection);
 router.patch('/:id', requireAuth, collectionsController.updateCollection);
+router.delete('/:id', requireAuth, collectionsController.deleteCollection);
 
 export default router;

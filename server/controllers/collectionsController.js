@@ -143,6 +143,31 @@ const collectionsController = {
       return res.status(500).json({ error: 'Internal server error.' });
     }
   },
+
+  async deleteCollection(req, res) {
+    try {
+      const id = parseId(req.params.id);
+      if (id === null) {
+        return res.status(400).json({ error: 'id must be a positive integer.' });
+      }
+
+      const existing = await pool.query('SELECT user_id FROM collections WHERE id = $1', [id]);
+      if (existing.rowCount === 0) {
+        return res.status(404).json({ error: 'Collection not found.' });
+      }
+      if (existing.rows[0].user_id !== req.user.id) {
+        return res.status(403).json({ error: 'You can only delete your own collections.' });
+      }
+
+      // Cascades to library_entries, then library_entry_tags, via their FK ON DELETE CASCADE.
+      const result = await pool.query('DELETE FROM collections WHERE id = $1 RETURNING id', [id]);
+
+      return res.json({ id: result.rows[0].id });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error.' });
+    }
+  },
 };
 
 export default collectionsController;
