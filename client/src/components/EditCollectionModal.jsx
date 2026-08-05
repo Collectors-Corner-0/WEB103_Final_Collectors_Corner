@@ -34,7 +34,11 @@ const EditCollectionModal = ({ apiUrl, collection, onClose, onSaved }) => {
 
     setFieldErrors((errors) => ({ ...errors, avatar_url: undefined }))
     const reader = new FileReader()
-    reader.onload = () => setForm((f) => ({ ...f, avatar_url: reader.result }))
+    reader.onerror = () => setFieldErrors((errors) => ({ ...errors, avatar_url: 'Could not read that file.' }))
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : ''
+      setForm((f) => ({ ...f, avatar_url: result }))
+    }
     reader.readAsDataURL(file)
   }
 
