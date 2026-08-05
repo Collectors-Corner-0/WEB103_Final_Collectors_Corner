@@ -60,10 +60,10 @@ const EditCollectionModal = ({ apiUrl, collection, onClose, onSaved, onDeleted }
       const body = await res.json()
       if (!res.ok) throw new Error(body.error || 'Request failed.')
 
+      setDeleting(false)
       onDeleted()
     } catch (err) {
       setDeleteError(err.message)
-    } finally {
       setDeleting(false)
     }
   }
