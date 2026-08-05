@@ -161,6 +161,9 @@ const collectionsController = {
 
       // Cascades to library_entries, then library_entry_tags, via their FK ON DELETE CASCADE.
       const result = await pool.query('DELETE FROM collections WHERE id = $1 RETURNING id', [id]);
+      if (result.rowCount === 0) {
+        return res.status(404).json({ error: 'Collection not found.' });
+      }
 
       return res.json({ id: result.rows[0].id });
     } catch (error) {
