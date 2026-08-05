@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
 import MediaCard from '../components/MediaCard'
 import TagManagerModal from '../components/TagManagerModal'
@@ -9,7 +9,7 @@ const MEDIA_TYPES = ['book', 'movie', 'music', 'podcast', 'video', 'magazine', '
 const STATUSES = ['planned', 'in_progress', 'completed', 'archived']
 
 const UserCollection = ({ apiUrl, currentUserId }) => {
-  const { userId } = useParams()
+  const { userId, collectionId } = useParams()
   const isOwnCollection = currentUserId != null && Number(userId) === currentUserId
   const { data: user, loading: userLoading, error: userError } = useFetch(`${apiUrl}/users/${userId}`)
   const {
@@ -17,10 +17,14 @@ const UserCollection = ({ apiUrl, currentUserId }) => {
     loading: entriesLoading,
     error: entriesError,
     refetch: refetchEntries,
-  } = useFetch(`${apiUrl}/library/${userId}`)
+  } = useFetch(`${apiUrl}/library/collection/${collectionId}`)
   const { data: tags, loading: tagsLoading, error: tagsError, refetch: refetchTags } = useFetch(
     `${apiUrl}/tags/${userId}`
   )
+  const { data: collections, loading: collectionsLoading, error: collectionsError } = useFetch(
+    `${apiUrl}/collections/${userId}`
+  )
+  const collection = collections?.find((c) => c.id === Number(collectionId))
 
   const [tagFilter, setTagFilter] = useState('')
   const [typeFilter, setTypeFilter] = useState('')
@@ -52,10 +56,11 @@ const UserCollection = ({ apiUrl, currentUserId }) => {
     return result
   }, [entries, tagFilter, typeFilter, statusFilter, sortBy])
 
-  if (userLoading || entriesLoading || tagsLoading) return <Spinner />
+  if (userLoading || entriesLoading || tagsLoading || collectionsLoading) return <Spinner />
   if (userError) return <p className="error-message">{userError}</p>
   if (entriesError) return <p className="error-message">{entriesError}</p>
   if (tagsError) return <p className="error-message">{tagsError}</p>
+  if (collectionsError) return <p className="error-message">{collectionsError}</p>
 
   const handleTagManagerChange = () => {
     refetchTags()
@@ -76,8 +81,10 @@ const UserCollection = ({ apiUrl, currentUserId }) => {
         </div>
       </section>
 
+      <Link to={`/collections/${userId}`}>← All of {user.username}'s collections</Link>
+
       <div className="page-heading">
-        <h2>Collection</h2>
+        <h2>{collection?.name || 'Collection'}</h2>
         {isOwnCollection && (
           <button type="button" className="btn btn-secondary" onClick={() => setIsManagingTags(true)}>
             Manage tags

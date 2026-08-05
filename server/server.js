@@ -8,6 +8,7 @@ import libraryEntriesRouter from './routes/libraryEntries.js';
 import usersRouter from './routes/users.js';
 import tagsRouter from './routes/tags.js';
 import authRouter from './routes/auth.js';
+import collectionsRouter from './routes/collections.js';
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use('/api/media', mediaRouter);
 app.use('/api/library', libraryEntriesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/tags', tagsRouter);
+app.use('/api/collections', collectionsRouter);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

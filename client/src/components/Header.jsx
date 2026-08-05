@@ -18,7 +18,7 @@ const Header = ({ authUrl, user, onLogout }) => {
       <div className="nav-auth">
         {user ? (
           <>
-            <NavLink to={`/collections/${user.id}`}>My Collection</NavLink>
+            <NavLink to={`/collections/${user.id}`}>My Collections</NavLink>
             <span className="header-user">
               {user.avatarurl && <img src={user.avatarurl} alt={user.username} className="header-avatar" />}
               {user.username}

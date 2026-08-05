@@ -1,10 +1,19 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import useAddToLibrary from '../hooks/useAddToLibrary'
+import ChooseCollectionModal from './ChooseCollectionModal'
 
-const MediaCard = ({ media, editHref, apiUrl, canAddToLibrary, onAdded }) => {
-  const [adding, setAdding] = useState(false)
-  const [added, setAdded] = useState(false)
-  const [addError, setAddError] = useState(null)
+const MediaCard = ({ media, editHref, apiUrl, canAddToLibrary, currentUserId, onAdded }) => {
+  const mediaId = media.media_id ?? media.id
+  const { adding, added, addError, needsCollectionChoice, attemptAdd, closeCollectionChoice } = useAddToLibrary(
+    apiUrl,
+    mediaId
+  )
+
+  useEffect(() => {
+    if (added) onAdded?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [added])
 
   const hearts = () => {
     let hearts = ''
@@ -14,32 +23,9 @@ const MediaCard = ({ media, editHref, apiUrl, canAddToLibrary, onAdded }) => {
     return hearts
   }
 
-  const handleAddToLibrary = async () => {
-    setAdding(true)
-    setAddError(null)
-
-    try {
-      const res = await fetch(`${apiUrl}/library`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ media_id: media.media_id ?? media.id }),
-      })
-      const body = await res.json()
-      if (!res.ok) throw new Error(body.error || 'Request failed.')
-
-      setAdded(true)
-      onAdded?.()
-    } catch (err) {
-      setAddError(err.message)
-    } finally {
-      setAdding(false)
-    }
-  }
-
   return (
     <div className="media-card">
-      <Link to={`/media/${media.media_id ?? media.id}`} className="media-link">
+      <Link to={`/media/${mediaId}`} className="media-link">
         <div className="media-img">
           {media.cover_image_url ? (
             <img src={media.cover_image_url} alt={media.title} />
@@ -80,16 +66,20 @@ const MediaCard = ({ media, editHref, apiUrl, canAddToLibrary, onAdded }) => {
       )}
       {canAddToLibrary && (
         <>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleAddToLibrary}
-            disabled={adding || added}
-          >
+          <button type="button" className="btn btn-secondary" onClick={() => attemptAdd()} disabled={adding || added}>
             {added ? 'Added to your collection' : adding ? 'Adding…' : 'Add to my collection'}
           </button>
           {addError && <p className="form-error-banner">{addError}</p>}
         </>
+      )}
+
+      {needsCollectionChoice && (
+        <ChooseCollectionModal
+          apiUrl={apiUrl}
+          userId={currentUserId}
+          onClose={closeCollectionChoice}
+          onSelect={(collectionId) => attemptAdd(collectionId)}
+        />
       )}
     </div>
   )

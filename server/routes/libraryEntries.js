@@ -4,9 +4,8 @@ import requireAuth from '../middleware/requireAuth.js';
 
 const router = Router();
 
-// Must precede '/:userId' or Express would match 'entry' as a userId.
 router.get('/entry/:id', libraryEntriesController.getEntryById);
-router.get('/:userId', libraryEntriesController.getEntriesByUser);
+router.get('/collection/:collectionId', libraryEntriesController.getEntriesByCollection);
 router.post('/', requireAuth, libraryEntriesController.createEntry);
 router.patch('/:id', requireAuth, libraryEntriesController.updateEntry);
 router.delete('/:id', requireAuth, libraryEntriesController.deleteEntry);

@@ -39,7 +39,7 @@ const LibraryEntryEdit = ({ apiUrl, currentUserId, currentUserLoading }) => {
     return (
       <div className="collector-container">
         <p className="error-message">You don't have permission to edit this entry.</p>
-        <Link to={`/collections/${entry.user_id}`}>Back to collection</Link>
+        <Link to={`/collections/${entry.user_id}/${entry.collection_id}`}>Back to collection</Link>
       </div>
     )
   }
@@ -66,7 +66,7 @@ const LibraryEntryEdit = ({ apiUrl, currentUserId, currentUserLoading }) => {
       const body = await res.json()
       if (!res.ok) throw new Error(body.error || 'Request failed.')
 
-      navigate(`/collections/${entry.user_id}`)
+      navigate(`/collections/${entry.user_id}/${entry.collection_id}`)
     } catch (err) {
       setSubmitError(err.message)
     } finally {
@@ -103,7 +103,7 @@ const LibraryEntryEdit = ({ apiUrl, currentUserId, currentUserLoading }) => {
       const body = await res.json()
       if (!res.ok) throw new Error(body.error || 'Request failed.')
 
-      navigate(`/collections/${entry.user_id}`)
+      navigate(`/collections/${entry.user_id}/${entry.collection_id}`)
     } catch (err) {
       setDeleteError(err.message)
     } finally {
