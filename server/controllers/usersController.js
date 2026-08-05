@@ -32,7 +32,8 @@ const usersController = {
            COUNT(library_entries.id)::int AS library_entry_count
          FROM users
          LEFT JOIN user_profiles ON user_profiles.user_id = users.id
-         LEFT JOIN library_entries ON library_entries.user_id = users.id
+         LEFT JOIN collections ON collections.user_id = users.id
+         LEFT JOIN library_entries ON library_entries.collection_id = collections.id
          WHERE users.id = $1
          GROUP BY users.id, user_profiles.user_id`,
         [id]

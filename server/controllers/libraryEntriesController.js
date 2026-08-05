@@ -1,4 +1,5 @@
 import pool from '../config/database.js';
+import { nextCollectionName } from './collectionsController.js';
 
 const STATUSES = ['planned', 'in_progress', 'completed', 'archived'];
 
@@ -14,7 +15,9 @@ function isValidRating(rating) {
 const ENTRY_SELECT = `
   SELECT
     library_entries.id,
-    library_entries.user_id,
+    library_entries.collection_id,
+    collections.user_id,
+    collections.name AS collection_name,
     library_entries.media_id,
     library_entries.status,
     library_entries.rating,
@@ -35,20 +38,21 @@ const ENTRY_SELECT = `
       '[]'
     ) AS tags
   FROM library_entries
+  JOIN collections ON collections.id = library_entries.collection_id
   JOIN media ON media.id = library_entries.media_id
 `;
 
 const libraryEntriesController = {
-  async getEntriesByUser(req, res) {
+  async getEntriesByCollection(req, res) {
     try {
-      const userId = parseId(req.params.userId);
-      if (userId === null) {
-        return res.status(400).json({ error: 'userId must be a positive integer.' });
+      const collectionId = parseId(req.params.collectionId);
+      if (collectionId === null) {
+        return res.status(400).json({ error: 'collectionId must be a positive integer.' });
       }
 
       const result = await pool.query(
-        `${ENTRY_SELECT} WHERE library_entries.user_id = $1 ORDER BY library_entries.id`,
-        [userId]
+        `${ENTRY_SELECT} WHERE library_entries.collection_id = $1 ORDER BY library_entries.id`,
+        [collectionId]
       );
       return res.json(result.rows);
     } catch (error) {
@@ -80,6 +84,7 @@ const libraryEntriesController = {
     try {
       const {
         media_id,
+        collection_id = null,
         status = 'planned',
         rating = null,
         personal_notes = null,
@@ -99,20 +104,46 @@ const libraryEntriesController = {
         return res.status(400).json({ error: `status must be one of: ${STATUSES.join(', ')}.` });
       }
 
+      let collectionId = parseId(collection_id);
+
+      if (collectionId !== null) {
+        const collection = await pool.query('SELECT user_id FROM collections WHERE id = $1', [collectionId]);
+        if (collection.rowCount === 0) {
+          return res.status(404).json({ error: 'Collection not found.' });
+        }
+        if (collection.rows[0].user_id !== userId) {
+          return res.status(403).json({ error: 'You can only add media to your own collections.' });
+        }
+      } else {
+        const existingCount = await pool.query('SELECT COUNT(*)::int AS count FROM collections WHERE user_id = $1', [
+          userId,
+        ]);
+        if (existingCount.rows[0].count > 0) {
+          return res.status(400).json({ error: 'Choose a collection.', code: 'COLLECTION_REQUIRED' });
+        }
+
+        const { name, position } = await nextCollectionName(userId);
+        const created = await pool.query(
+          `INSERT INTO collections (user_id, name, position) VALUES ($1, $2, $3) RETURNING id`,
+          [userId, name, position]
+        );
+        collectionId = created.rows[0].id;
+      }
+
       const result = await pool.query(
-        `INSERT INTO library_entries (user_id, media_id, status, rating, personal_notes, date_acquired)
+        `INSERT INTO library_entries (collection_id, media_id, status, rating, personal_notes, date_acquired)
          VALUES ($1, $2, $3, $4, $5, $6)
          RETURNING *`,
-        [userId, mediaId, status, rating, personal_notes, date_acquired]
+        [collectionId, mediaId, status, rating, personal_notes, date_acquired]
       );
 
       return res.status(201).json(result.rows[0]);
     } catch (error) {
       if (error.code === '23505') {
-        return res.status(409).json({ error: 'This media is already in that user’s library.' });
+        return res.status(409).json({ error: 'This media is already in that collection.' });
       }
       if (error.code === '23503') {
-        return res.status(400).json({ error: 'user_id or media_id does not reference an existing row.' });
+        return res.status(400).json({ error: 'collection_id or media_id does not reference an existing row.' });
       }
       console.error(error);
       return res.status(500).json({ error: 'Internal server error.' });
@@ -126,7 +157,13 @@ const libraryEntriesController = {
         return res.status(400).json({ error: 'id must be a positive integer.' });
       }
 
-      const existing = await pool.query('SELECT * FROM library_entries WHERE id = $1', [id]);
+      const existing = await pool.query(
+        `SELECT library_entries.*, collections.user_id
+         FROM library_entries
+         JOIN collections ON collections.id = library_entries.collection_id
+         WHERE library_entries.id = $1`,
+        [id]
+      );
       if (existing.rowCount === 0) {
         return res.status(404).json({ error: 'Library entry not found.' });
       }
@@ -172,7 +209,13 @@ const libraryEntriesController = {
         return res.status(400).json({ error: 'id must be a positive integer.' });
       }
 
-      const existing = await pool.query('SELECT * FROM library_entries WHERE id = $1', [id]);
+      const existing = await pool.query(
+        `SELECT library_entries.id, collections.user_id
+         FROM library_entries
+         JOIN collections ON collections.id = library_entries.collection_id
+         WHERE library_entries.id = $1`,
+        [id]
+      );
       if (existing.rowCount === 0) {
         return res.status(404).json({ error: 'Library entry not found.' });
       }
@@ -197,7 +240,13 @@ const libraryEntriesController = {
         return res.status(400).json({ error: 'entryId and tagId must be positive integers.' });
       }
 
-      const entry = await pool.query('SELECT user_id FROM library_entries WHERE id = $1', [entryId]);
+      const entry = await pool.query(
+        `SELECT collections.user_id
+         FROM library_entries
+         JOIN collections ON collections.id = library_entries.collection_id
+         WHERE library_entries.id = $1`,
+        [entryId]
+      );
       if (entry.rowCount === 0) {
         return res.status(404).json({ error: 'Library entry not found.' });
       }
@@ -242,7 +291,13 @@ const libraryEntriesController = {
         return res.status(400).json({ error: 'entryId and tagId must be positive integers.' });
       }
 
-      const entry = await pool.query('SELECT user_id FROM library_entries WHERE id = $1', [entryId]);
+      const entry = await pool.query(
+        `SELECT collections.user_id
+         FROM library_entries
+         JOIN collections ON collections.id = library_entries.collection_id
+         WHERE library_entries.id = $1`,
+        [entryId]
+      );
       if (entry.rowCount === 0) {
         return res.status(404).json({ error: 'Library entry not found.' });
       }
