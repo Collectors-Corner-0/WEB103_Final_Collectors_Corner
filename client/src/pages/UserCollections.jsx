@@ -40,6 +40,7 @@ const UserCollections = ({ apiUrl, currentUserId }) => {
           <div className="media-row">
             {collections.map((collection) => (
               <Link key={collection.id} to={`/collections/${userId}/${collection.id}`} className="user-card">
+                {collection.avatar_url && <img src={collection.avatar_url} alt={collection.name} />}
                 <p>{collection.name}</p>
                 <p>{collection.item_count} items</p>
               </Link>

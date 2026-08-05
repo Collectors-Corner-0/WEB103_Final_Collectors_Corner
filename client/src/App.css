@@ -283,6 +283,29 @@
   font-size: var(--text-xl);
 }
 
+.collection-avatar-preview {
+  display: block;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+
+.collection-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.collection-heading-avatar {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 /* FORMS */
 
 .field {
