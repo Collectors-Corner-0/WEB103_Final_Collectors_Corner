@@ -11,7 +11,7 @@ This unit, be sure to complete all tasks listed below. To complete a task, place
 - [ ] Update the status of issues in your project board as you complete them
 - [x] In `readme.md`, check off the features you have completed in this unit by adding a ✅ emoji in front of their title
   - [ ] Under each feature you have completed, **include a GIF** showing feature functionality
-- [ ] In this document, complete the **Reflection** section below
+- [x] In this document, complete the **Reflection** section below
 - [x] 🚩🚩🚩**Complete the Final Project Feature Checklist section below**, detailing each feature you completed in the project (ONLY include features you implemented, not features you planned)
 - [ ] 🚩🚩🚩**Record a GIF showing a complete run-through of your app** that displays all the components included in the **Final Project Feature Checklist** below
   - [ ] Include this GIF in the **Final Demo GIF** section below
@@ -102,8 +102,8 @@ Root-causing the cookie bug without guessing: the difference between "add `parti
 
 ### 4. Reflecting on your web development journey so far, how have you grown since the beginning of the course?
 
-[👉🏾👉🏾👉🏾 your answer here]
+At the start of this course, "frontend" and "backend" were mostly just two folders I put code in; building Collector's Corner end to end is what turned that into an actual mental model of how each piece works on its own and connects to the others — the database enforcing integrity through constraints, the API validating and enforcing ownership before anything gets written, the client managing its own state and never trusting the server blindly, and session/cookies being their own layer with rules that have nothing to do with either side's application logic (the cross-domain cookie bug this unit was the clearest proof of that). Along the way I also got more comfortable with the fact that there's usually more than one reasonable tool for the same problem — session cookies versus JWTs, `nodemon` versus a plain `node` start script for production — and that picking one is a real decision with tradeoffs, not a default; the next step for me is getting faster and more confident at making that call, so I can combine tools deliberately for their strengths instead of discovering a mismatch after it's already shipped.
 
 ### 5. Looking ahead, what are your goals related to web development, and what steps do you plan to take to achieve them?
 
-[👉🏾👉🏾👉🏾 your answer here]
+My goal going forward is to get better at system design — not just knowing individual tools like React, Express, or Postgres, but developing the judgment to combine multiple systems together in a way that's genuinely reliable, not just functional on a happy path. This project made that concrete: getting auth, sessions, and deployment infrastructure to actually work together correctly took more real design thinking than any single piece of code did. To get there, I plan to keep learning new tools deliberately rather than defaulting to whatever's familiar, and to put that into practice on projects substantial enough to be worth showing off — the kind that force me to make real architectural tradeoffs end to end, not just follow a tutorial, so that what I'm building doubles as both a learning exercise and something worth putting on a resume.
