@@ -123,10 +123,19 @@ const libraryEntriesController = {
         }
 
         const { name, position } = await nextCollectionName(userId);
-        const created = await pool.query(
-          `INSERT INTO collections (user_id, name, position) VALUES ($1, $2, $3) RETURNING id`,
-          [userId, name, position]
-        );
+
+        let created;
+        try {
+          created = await pool.query(
+            `INSERT INTO collections (user_id, name, position) VALUES ($1, $2, $3) RETURNING id`,
+            [userId, name, position]
+          );
+        } catch (err) {
+          if (err.code !== '23505') throw err;
+          created = await pool.query('SELECT id FROM collections WHERE user_id = $1 AND position = $2', [userId, position]);
+          if (created.rowCount === 0) throw err;
+        }
+
         collectionId = created.rows[0].id;
       }
 
