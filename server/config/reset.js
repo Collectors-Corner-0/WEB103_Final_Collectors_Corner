@@ -9,6 +9,7 @@ async function dropAllTables() {
   await pool.query(`
     DROP TABLE IF EXISTS library_entry_tags;
     DROP TABLE IF EXISTS library_entries;
+    DROP TABLE IF EXISTS collections;
     DROP TABLE IF EXISTS tags;
     DROP TABLE IF EXISTS media;
     DROP TABLE IF EXISTS user_profiles;
@@ -60,11 +61,24 @@ async function createMediaTable() {
   `);
 }
 
+async function createCollectionsTable() {
+  await pool.query(`
+    CREATE TABLE collections (
+      id SERIAL PRIMARY KEY,
+      user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      name VARCHAR(100) NOT NULL,
+      position INT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      UNIQUE (user_id, position)
+    );
+  `);
+}
+
 async function createLibraryEntriesTable() {
   await pool.query(`
     CREATE TABLE library_entries (
       id SERIAL PRIMARY KEY,
-      user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      collection_id INT NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
       media_id INT NOT NULL REFERENCES media(id) ON DELETE CASCADE,
       status VARCHAR(20) NOT NULL DEFAULT 'planned' CHECK (status IN
         ('planned', 'in_progress', 'completed', 'archived')),
@@ -72,7 +86,7 @@ async function createLibraryEntriesTable() {
       personal_notes TEXT,
       date_acquired DATE,
       created_at TIMESTAMP DEFAULT NOW(),
-      UNIQUE (user_id, media_id)
+      UNIQUE (collection_id, media_id)
     );
   `);
 }
@@ -128,15 +142,30 @@ async function seedMediaTable() {
   }
 }
 
+async function seedCollectionsTable() {
+  const raw = await readFile(path.join(__dirname, 'data', 'collections.json'), 'utf8');
+  const collections = JSON.parse(raw);
+
+  for (const collection of collections) {
+    await pool.query(
+      `INSERT INTO collections (user_id, name, position)
+       VALUES ((SELECT id FROM users WHERE username = $1), $2, $3)`,
+      [collection.username, collection.name, collection.position]
+    );
+  }
+}
+
 async function seedLibraryEntriesTable() {
   const raw = await readFile(path.join(__dirname, 'data', 'library_entries.json'), 'utf8');
   const entries = JSON.parse(raw);
 
   for (const entry of entries) {
     await pool.query(
-      `INSERT INTO library_entries (user_id, media_id, status, rating, personal_notes, date_acquired)
+      `INSERT INTO library_entries (collection_id, media_id, status, rating, personal_notes, date_acquired)
        VALUES (
-         (SELECT id FROM users WHERE username = $1),
+         (SELECT collections.id FROM collections
+          JOIN users ON users.id = collections.user_id
+          WHERE users.username = $1 AND collections.position = 1),
          (SELECT id FROM media WHERE title = $2),
          $3, $4, $5, $6
        )`,
@@ -168,7 +197,8 @@ async function seedLibraryEntryTagsTable() {
     const entryResult = await pool.query(
       `SELECT library_entries.id
        FROM library_entries
-       JOIN users ON users.id = library_entries.user_id
+       JOIN collections ON collections.id = library_entries.collection_id
+       JOIN users ON users.id = collections.user_id
        JOIN media ON media.id = library_entries.media_id
        WHERE users.username = $1 AND media.title = $2`,
       [assignment.username, assignment.media_title]
@@ -209,11 +239,13 @@ async function resetDatabase() {
   await createUsersTable();
   await createUserProfilesTable();
   await createMediaTable();
+  await createCollectionsTable();
   await createLibraryEntriesTable();
   await createTagsTable();
   await createLibraryEntryTagsTable();
   await seedUsersTable();
   await seedMediaTable();
+  await seedCollectionsTable();
   await seedLibraryEntriesTable();
   await seedTagsTable();
   await seedLibraryEntryTagsTable();
