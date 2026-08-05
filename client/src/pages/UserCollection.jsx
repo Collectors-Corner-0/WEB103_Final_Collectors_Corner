@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
 import MediaCard from '../components/MediaCard'
 import TagManagerModal from '../components/TagManagerModal'
@@ -11,6 +11,7 @@ const STATUSES = ['planned', 'in_progress', 'completed', 'archived']
 
 const UserCollection = ({ apiUrl, currentUserId }) => {
   const { userId, collectionId } = useParams()
+  const navigate = useNavigate()
   const isOwnCollection = currentUserId != null && Number(userId) === currentUserId
   const { data: user, loading: userLoading, error: userError } = useFetch(`${apiUrl}/users/${userId}`)
   const {
@@ -181,6 +182,7 @@ const UserCollection = ({ apiUrl, currentUserId }) => {
           collection={collection}
           onClose={() => setIsEditingCollection(false)}
           onSaved={refetchCollections}
+          onDeleted={() => navigate(`/collections/${userId}`)}
         />
       )}
     </div>
